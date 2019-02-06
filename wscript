@@ -15,7 +15,6 @@ def set_project_paths(ctx):
 
     pp = OrderedDict()
     pp["PROJECT_ROOT"] = "."
-    pp["IN_DATA"] = "src/original_data/"
     pp["IN_MODEL_CODE"] = "src/model_code"
     pp["IN_MODEL_SPECS"] = "src/model_specs"
     pp["LIBRARY"] = "src/library"
@@ -24,9 +23,6 @@ def set_project_paths(ctx):
     pp["OUT_ANALYSIS"] = f"{out}/out/analysis"
     pp["OUT_FINAL"] = f"{out}/out/final"
     pp["OUT_FIGURES"] = f"{out}/out/figures"
-    # OUT_MODEL_SPECS is only required for using Stata with JSON and
-    # can be safely deleted otherwise
-    pp["OUT_MODEL_SPECS"] = f"{out}/src/model_specs"
     pp["OUT_TABLES"] = f"{out}/out/tables"
 
 
