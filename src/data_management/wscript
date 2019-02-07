@@ -10,3 +10,27 @@ def build(ctx):
         target=ctx.path_to(ctx, 'OUT_DATA', 'initial_locations.csv'),
         name='get_simulation_draws'
     )
+
+
+def build(ctx):
+    
+    for setup in 'setup_1', 'setup_2':
+        
+        for rep_number in range(3):
+            
+            ctx(
+                features='run_py_script',
+                source='get_simulated_samples.py',
+                deps=[
+                    ctx.path_to(ctx,'IN_MODEL_SPECS', '{}.json'.format(setup)),
+                    ctx.path_to(ctx,'IN_MODEL_CODE', 'main_effect_functions.py'),
+                    ctx.path_to(ctx,'IN_MODEL_CODE', 'treatment_effect_functions.py'),
+                    ctx.path_to(ctx,'IN_MODEL_CODE', 'propensity_functions.py')
+                ],
+                target=[
+                    ctx.path_to(ctx,'OUT_DATA', 'sample_{}_rep_{}.pickle'.format(setup,rep_number))
+                ],
+                name='sample_{}_rep_{}'.format(setup,rep_number)
+            )
+
+ 
