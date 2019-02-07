@@ -1,3 +1,4 @@
 {
-    "rep_number": 4
+    "rep_number": 4,
+    "list_of_setups": ["setup_1", "setup_2", "setup_3"]
 }

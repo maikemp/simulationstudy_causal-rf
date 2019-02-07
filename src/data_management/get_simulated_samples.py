@@ -52,7 +52,7 @@ def get_simulated_sample(setup):
     
 if __name__ == "__main__":
     setup_name = sys.argv[1]
-    rep_number = int(sys.argv[2])
+    rep_number = sys.argv[2]
     
     setup = json.load(open(ppj("IN_MODEL_SPECS", setup_name + ".json"), encoding="utf-8"))
 

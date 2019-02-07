@@ -2,6 +2,9 @@
 import json
 
 sim_param = json.load(open('src/model_specs/simulation_parameters.json'), encoding='utf-8')
+repetitions = [str(par) for par in range(sim_param['rep_number'])]
+repetitions.extend(['test'])
+
 
 def build(ctx):
 
@@ -13,9 +16,9 @@ def build(ctx):
         name='get_simulation_draws'
     )
     
-    for setup in 'setup_1', 'setup_2', 'setup_3':
+    for setup in sim_param["list_of_setups"]:
         
-        for rep_number in [str(par) for par in range(sim_param['rep_number'])]:
+        for rep_number in repetitions:
             
             ctx(
                 features='run_py_script',
