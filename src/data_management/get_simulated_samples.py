@@ -49,20 +49,6 @@ def get_simulated_sample(setup):
     return data
 
  
-#def save_data(sample, setup_name):
-#    sample.to_pickle(ppj("OUT_DATA", 'sample_{}'.format(setup_name)))    
-#def save_data(sample, setup_name, rep_number):
-    #sample.to_pickle(ppj("OUT_DATA", 'sample_{}_rep_{}'.format(setup_name, rep_number)))    
-    
-
-#if __name__ == "__main__":
-#    setup_name = sys.argv[1]
-#    #rep_number = sys.argv[2]
-#    setup = json.load(open(ppj("IN_MODEL_SPECS", setup_name + ".json"), encoding="utf-8"))
-#    
-#    data = get_simulated_sample(setup)
-#    save_data(data, setup_name)
-#    #save_data(data, setup_name, rep_number)
     
 if __name__ == "__main__":
     setup_name = sys.argv[1]
