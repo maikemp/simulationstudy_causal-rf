@@ -12,7 +12,7 @@ def build(ctx):
             deps=[
                 ctx.path_to(ctx, 'OUT_DATA', 'initial_locations.csv'),
                 ctx.path_to(ctx, 'IN_MODEL_CODE', 'agent.py'),
-                ctx.path_to(ctx, 'IN_MODEL_SPECS', '{}.json'.format(model)),
+                ctx.path_to(ctx, 'IN_MODEL_SPECS', '{}.json'.format(model))
             ],
             target=[
                 ctx.path_to(ctx, 'OUT_ANALYSIS', 'schelling_{}.pickle'.format(model)),

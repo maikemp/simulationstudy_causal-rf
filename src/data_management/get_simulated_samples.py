@@ -7,17 +7,16 @@ repetition number indicating the repetition currently at for the simulation.
 """
 
 
-
 import sys
 import json
 import numpy as np
+import pickle
 import pandas as pd
 from bld.project_paths import project_paths_join as ppj
 
 import src.model_code.main_effect_functions as mef
 import src.model_code.treatment_effect_functions as tef
 import src.model_code.propensity_functions as pf
-
 
 def get_simulated_sample(setup):
     """Simulate a sample ..."""
@@ -50,15 +49,33 @@ def get_simulated_sample(setup):
     return data
 
  
-def save_data(sample, setup_name, rep_number):
-    sample.to_pickle(ppj("OUT_DATA", 'sample_{}_rep_{}'.format(setup_name, rep_number)))    
+#def save_data(sample, setup_name):
+#    sample.to_pickle(ppj("OUT_DATA", 'sample_{}'.format(setup_name)))    
+#def save_data(sample, setup_name, rep_number):
+    #sample.to_pickle(ppj("OUT_DATA", 'sample_{}_rep_{}'.format(setup_name, rep_number)))    
+    
 
+#if __name__ == "__main__":
+#    setup_name = sys.argv[1]
+#    #rep_number = sys.argv[2]
+#    setup = json.load(open(ppj("IN_MODEL_SPECS", setup_name + ".json"), encoding="utf-8"))
+#    
+#    data = get_simulated_sample(setup)
+#    save_data(data, setup_name)
+#    #save_data(data, setup_name, rep_number)
+    
 if __name__ == "__main__":
     setup_name = sys.argv[1]
-    rep_number = sys.argv[2]
-    setup = json.load(open(ppj("IN_MODEL_SPECS", setup_name + ".json"), encoding="utf-8"))
+    rep_number = int(sys.argv[2])
     
-    data = get_simulated_sample(setup)
-    save_data(data, setup, rep_number)
+    setup = json.load(open(ppj("IN_MODEL_SPECS", setup_name + ".json"), encoding="utf-8"))
 
+
+    # Load initial locations and setup agents
+    data = get_simulated_sample(setup)
+    # Run the main analysis
+    #locations_by_round = run_analysis(agents, setup)
+    # Store list with locations after each round
+    with open(ppj("OUT_DATA", "sample_{}_rep_{}.pickle".format(setup_name,rep_number)), "wb") as out_file:
+        pickle.dump(data, out_file)
 

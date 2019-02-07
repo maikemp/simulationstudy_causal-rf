@@ -1,5 +1,7 @@
 #! python
+import json
 
+sim_param = json.load(open('src/model_specs/simulation_parameters.json'), encoding='utf-8')
 
 def build(ctx):
 
@@ -10,13 +12,10 @@ def build(ctx):
         target=ctx.path_to(ctx, 'OUT_DATA', 'initial_locations.csv'),
         name='get_simulation_draws'
     )
-
-
-def build(ctx):
     
     for setup in 'setup_1', 'setup_2':
         
-        for rep_number in range(3):
+        for rep_number in [str(par) for par in range(sim_param['rep_number'])]:
             
             ctx(
                 features='run_py_script',
@@ -28,9 +27,9 @@ def build(ctx):
                     ctx.path_to(ctx,'IN_MODEL_CODE', 'propensity_functions.py')
                 ],
                 target=[
-                    ctx.path_to(ctx,'OUT_DATA', 'sample_{}_rep_{}.pickle'.format(setup,rep_number))
+                    ctx.path_to(ctx, 'OUT_DATA', 'sample_{}_rep_{}.pickle'.format(setup,rep_number))
                 ],
+                append=[setup, rep_number],
                 name='sample_{}_rep_{}'.format(setup,rep_number)
             )
 
- 
