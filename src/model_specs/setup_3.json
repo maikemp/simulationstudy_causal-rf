@@ -1,0 +1,13 @@
+{
+    "x_mean": [10, 2],
+    "x_distr": "normal",
+    "x_cov": [[1, 0.5],[0.5, 1]],
+    "x_low": -1,
+    "x_high": 1,
+    "n": 1000,
+    "sigma": 3,
+    "d": 2,
+    "propensity_function": "propensity_function_1",
+    "treatment_effect_function": "treatment_effect_function_1",
+    "main_effect_function": "main_effect_function_1"
+}

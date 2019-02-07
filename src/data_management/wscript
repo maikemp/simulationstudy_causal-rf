@@ -13,7 +13,7 @@ def build(ctx):
         name='get_simulation_draws'
     )
     
-    for setup in 'setup_1', 'setup_2':
+    for setup in 'setup_1', 'setup_2', 'setup_3':
         
         for rep_number in [str(par) for par in range(sim_param['rep_number'])]:
             
