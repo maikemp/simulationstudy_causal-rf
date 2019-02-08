@@ -10,6 +10,13 @@ import numpy as np
 import pickle
 
 dep_string = "OUT_DATA_"+"setups_1".upper()
+n = "3"
+m=int(n)
+m*2
+n=[1,2,3]
+[str(par) for par in n]
+
+
 
 f"/out/data/{dep_string}"
 

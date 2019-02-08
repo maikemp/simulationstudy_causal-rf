@@ -33,7 +33,7 @@ def build(ctx):
                         ctx.path_to(ctx,'IN_MODEL_CODE', 'propensity_functions.py')
                     ],
                     target=[
-                        ctx.path_to(ctx, 'OUT_DATA_' + setup.upper(), 'sample_{}_n={}_rep_{}.pickle'.format(setup, n, rep_number))
+                        ctx.path_to(ctx, 'OUT_DATA_' + setup.upper(), 'sample_{}_n={}_rep_{}.json'.format(setup, n, rep_number))
                     ],
                     append=[setup, n, rep_number],
                     name='sample_{}_n={}_rep_{}'.format(setup, n, rep_number)
