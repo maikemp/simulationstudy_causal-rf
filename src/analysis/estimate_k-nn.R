@@ -1,4 +1,4 @@
-packages = c("devtools","randomForestCI","causalForest", "mgcv","FNN", "Hmisc", "xtable", "ggplot2")
+packages = c("mgcv","FNN", "Hmisc", "xtable", "ggplot2")
 
 package.check <- lapply(packages, FUN = function(x) {
   if (!require(x, character.only = TRUE)) {

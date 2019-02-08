@@ -62,6 +62,6 @@ if __name__ == "__main__":
     # Run the main analysis
     #locations_by_round = run_analysis(agents, setup)
     # Store list with locations after each round
-    with open(ppj("OUT_DATA", "sample_{}_rep_{}.pickle".format(setup_name,rep_number)), "wb") as out_file:
+    with open(ppj("OUT_DATA_" + setup_name.upper(), "sample_{}_rep_{}.pickle".format(setup_name,rep_number)), "wb") as out_file:
         pickle.dump(data, out_file)
 

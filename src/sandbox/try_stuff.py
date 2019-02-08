@@ -9,8 +9,16 @@ import pandas as pd
 import numpy as np
 import pickle
 
+dep_string = "OUT_DATA_"+"setups_1".upper()
+
+f"/out/data/{dep_string}"
+
+test={}
+test["bla"+dep_string]= f"some_string_{dep_string}"
+
 df = pd.DataFrame(np.array([[0.03, 2, 3], [0.2, 5, 6], [1, 3, 7]]))
 path = r'/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/bld/out/data/'
+
 
 data_1 = pd.read_pickle(path + 'sample_setup_1_rep_1.pickle')
 data_2 = pd.read_pickle(path + 'sample_setup_1_rep_2.pickle')
@@ -25,6 +33,15 @@ np.mean(data_3.X_0)
 np.mean(data_4.X_0)
 np.mean(data_5.X_0)
 np.mean(data_6.X_0)
+
+a=['test',[str(par) for par in (sim_param['rep_number'])]]
+
+
+a=[str(par) for par in range(3)]
+a.extend(['test'])
+repetitions = [str(par) for par in range(sim_param['rep_number'])]
+repetitions.extend(['test'])
+
 
 
 
