@@ -9,9 +9,20 @@ package.check <- lapply(packages, FUN = function(x) {
 
 source(src.model_code.sample_size_functions)
 source(src.model_code.n_tree_functions)
+source(bld.project_paths.r)
+PATH_OUT_FINAL
 
+jsdf<-paste(PATH_OUT_FINAL,'/', 'setup.json', sep="")
+path <- paste(PATH_OUT_DATA,"_",toupper(setup_name),"/sample_",setup_name,"_n=",n,"_rep_", rep_number, ".json", sep="")
 
-predict_forest <- function (dataframe, testset, n_tree, sample_size, nodesize, foresttype = double_sample){
+n<-5
+rep_number<-0
+setup_name <- 'setup_1'
+
+load_data <- function(path)
+  as.data.frame(do.call("cbind", fromJSON(path)))
+
+predict_forest <- function(dataframe, testset, n_tree, sample_size, nodesize, foresttype = double_sample){
   X <- select(dataframe, starts_with('X_'))
   X_test <- select(testset, starts_with('X_'))
   Y <- dataframe$Y
@@ -27,7 +38,7 @@ predict_forest <- function (dataframe, testset, n_tree, sample_size, nodesize, f
   
   predictions = predict(forest, X_test)
   forest_ci = randomForestInfJack(forest, X_test, calibrate = TRUE)
-  se_hat = sqrt(forest.ci$var.hat)
+  se_hat = sqrt(forest_ci$var.hat)
   
   up_lim = predictions + 1.96 * se_hat
   down_lim = predictions - 1.96 * se_hat
@@ -42,19 +53,30 @@ predict_forest <- function (dataframe, testset, n_tree, sample_size, nodesize, f
 
 write_data <- function()
 
-
 if (__name__ == "__main__"){
   args = commandArgs()
   setup_name = args[1]
+  n = args[2]
+  rep_number=args[3]
   
+  path_data <-paste(PATH_OUT_DATA,"_",toupper(setup_name),"/sample_",setup_name,"_n=",n,"_rep_", rep_number, ".json", sep="")
+  path_model_specs <-paste(PATH_IN_MODEL_SPECS,"/", setup_name,".json",sep="")
+  
+  
+  setup <- fromJSON(path_model_specs)
 }
 
 
 x=predict_forest(data_1, test_data_1, 30, 10, 1, 'double_sample')
 
+pp <<- '/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/bld/project_paths.r'
 path <<- '/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/bld/out/data/setup_1/sample_setup_1_n=50_rep_0.json'
 path_test <<- '/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/bld/out/data/setup_1/sample_setup_1_n=50_rep_test.json'
 path_specs <<- '/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/src/model_specs/setup_1.json'
+
+forest = causalForest(x_test, y_test, w_test, 30, 20, 1)
+X_test <- select(test_data_1, starts_with('X_'))
+forest_ci = randomForestInfJack(forest, X_test, calibrate = TRUE)
 
 setup <- fromJSON(path_specs)
 data_1 <- as.data.frame(do.call("cbind", fromJSON(path)))

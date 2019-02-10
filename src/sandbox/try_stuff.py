@@ -7,7 +7,29 @@ Created on Wed Feb  6 11:32:38 2019
 """
 import pandas as pd
 import numpy as np
-import pickle
+import json
+
+path = r'/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/src/model_specs/simulation_parameters.json'
+
+sim_param = json.load(open(path), encoding='utf-8')
+str(sim_param['n_test_points'])
+n_list = [str(par) for par in sim_param['n_list']]
+n_list = [str(sim_param['n_test_points'])]
+repetitions = [str(par) for par in range(sim_param['rep_number'])]
+repetitions[2]
+repetitions = [str(par) for par in range(sim_param['rep_number'])]
+repetitions.extend(['test'])
+
+a= list()
+for rep_number in repetitions:    
+    if rep_number == 'test':
+        n_list = [str(sim_param['n_test_points'])]
+    else:
+        n_list = [str(par) for par in sim_param['n_list']]
+    a.append(n_list)
+            
+
+
 
 dep_string = "OUT_DATA_"+"setups_1".upper()
 n = "3"

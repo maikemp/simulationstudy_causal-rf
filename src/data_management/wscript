@@ -19,7 +19,12 @@ def build(ctx):
     
     for setup in sim_param["list_of_setups"]:
 
-        for n in n_list:        
+        for n in n_list:   
+        
+            if n == str(sim_param['n_test_points']):
+                repetitions.extend(['test']) 
+            else:
+                repetitions = [str(par) for par in range(sim_param['rep_number'])] 
             
             for rep_number in repetitions:
                 
