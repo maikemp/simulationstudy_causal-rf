@@ -1,8 +1,36 @@
 #! python
+import json
+
+sim_param = json.load(open('src/model_specs/simulation_parameters.json'), encoding='utf-8')
+repetitions = [str(par) for par in range(sim_param['rep_number'])]
+repetitions.extend(['test'])
+n_list = [str(par) for par in sim_param['n_list']]
 
 
 def build(ctx):
+    
+    ctx(
+        features='run_r_script',
+        source='estimate_forest.R',
+        
+        for setup in sim_param["lis_of_setups"]:
+        
+            for n in n_list:
+            
+                for rep_number in repetitions:
+                    
+                    deps=[
+                        ctx.path_to(ctx,'OUT_DATA_' + setup.upper(), 'sample_{}_n={}_rep_{}.json'.format(setup, n, rep_number)),
+                        ctx.path_to(ctx,'IN_MODEL_SPECS', '{}.json'.format(setup)),
+                        ctx.path_to(ctx,'IN_MODEL_CODE', 'sample_size_functions.R'),
+                        ctx.path_to(ctx,'IN_MODEL_CODE', 'n_tree_functions.R')
 
+                    ],
+        target=[ctx.path_to(ctx, 'OUT_ANALYSIS', 'analysis_data.csv')],
+        name='get_analysis_data'
+        )
+
+    
     for model in 'baseline', 'max_moves_2':
 
         # Illustrate use of run_py_script with automatic model specification.

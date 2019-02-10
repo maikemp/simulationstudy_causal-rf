@@ -10,7 +10,6 @@ repetition number indicating the repetition currently at for the simulation.
 import sys
 import json
 import numpy as np
-import pickle
 import pandas as pd
 from bld.project_paths import project_paths_join as ppj
 
@@ -58,13 +57,7 @@ if __name__ == "__main__":
     setup = json.load(open(ppj("IN_MODEL_SPECS", setup_name + ".json"), encoding="utf-8"))
     sim_param = json.load(open(ppj("IN_MODEL_SPECS", "simulation_parameters.json"), encoding="utf-8"))
 
-
-    # Load initial locations and setup agents
     data = get_simulated_sample(setup, int(n))
-    # Run the main analysis
-    #locations_by_round = run_analysis(agents, setup)
-    # Store list with locations after each round
-   # with open(ppj("OUT_DATA_" + setup_name.upper(), "sample_{}_n={}_rep_{}.json".format(setup_name, n, rep_number)), "wb") as out_file:
-    #    json.dump(data, out_file)
+
     data.to_json(ppj("OUT_DATA_" + setup_name.upper(), "sample_{}_n={}_rep_{}.json".format(setup_name, n, rep_number)))    
 

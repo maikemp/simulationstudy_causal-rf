@@ -2,8 +2,6 @@
     "x_mean": [0, 2, 4],
     "x_distr": "normal",
     "x_cov": [[1, 0, 0.5],[0, 1, 0],[0.5, 0, 1]],
-    "x_low": -1,
-    "x_high": 1,
     "sigma": 1,
     "d": 3,
     "propensity_function": "propensity_function_1",
