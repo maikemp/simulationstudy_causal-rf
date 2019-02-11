@@ -18,7 +18,8 @@ n_list = [str(sim_param['n_test_points'])]
 repetitions = [str(par) for par in range(sim_param['rep_number'])]
 repetitions[2]
 repetitions = [str(par) for par in range(sim_param['rep_number'])]
-repetitions.extend(['test'])
+rep_1 = repetitions+['test']
+repetitions
 
 a= list()
 for rep_number in repetitions:    

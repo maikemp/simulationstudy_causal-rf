@@ -3,7 +3,6 @@ import json
 
 sim_param = json.load(open('src/model_specs/simulation_parameters.json'), encoding='utf-8')
 repetitions = [str(par) for par in range(sim_param['rep_number'])]
-repetitions.extend(['test'])
 n_list = [str(par) for par in sim_param['n_list']]
 
 
@@ -22,11 +21,11 @@ def build(ctx):
         for n in n_list:   
         
             if n == str(sim_param['n_test_points']):
-                repetitions.extend(['test']) 
+                rep = repetitions + ['test'] 
             else:
-                repetitions = [str(par) for par in range(sim_param['rep_number'])] 
+                rep = repetitions
             
-            for rep_number in repetitions:
+            for rep_number in rep:
                 
                 ctx(
                     features='run_py_script',
