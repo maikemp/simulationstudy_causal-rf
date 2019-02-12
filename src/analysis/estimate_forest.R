@@ -1,4 +1,6 @@
-packages = c("Matrix","dplyr","RJSONIO","devtools","randomForestCI","causalForest", "mgcv","FNN", "Hmisc", "xtable", "ggplot2")
+packages = c("R.utils","pracma","Matrix","dplyr","RJSONIO","devtools","randomForestCI","causalForest", "mgcv","FNN", "Hmisc")
+#"rstudioapi",
+#, "xtable", "ggplot2"
 
 package.check <- lapply(packages, FUN = function(x) {
   if (!require(x, character.only = TRUE)) {
@@ -6,10 +8,43 @@ package.check <- lapply(packages, FUN = function(x) {
     library(x, character.only = TRUE)
   }
 })
+print('loaded all packages')
+#current_path <- function() {
+ # cmdArgs <- commandArgs(trailingOnly = FALSE)
+  #needle <- "--file="
+#  match <- grep(needle, cmdArgs)
+ # if (length(match) > 0) {
+  #  # Rscript
+   # return(normalizePath(sub(needle, "", cmdArgs[match])))
+#  } else {
+ #   # 'source'd via R console
+  #  return(normalizePath(sys.frames()[[1]]$ofile))
+#  }
+#}
 
-source(src.model_code.sample_size_functions)
-source(src.model_code.n_tree_functions)
-source(bld.project_paths.r)
+#current_path <- dirname(sys.frame(1)$ofile)
+#current_path <- getActiveDocumentContext()$path 
+#current_path <- current_path()
+#setwd(dirname(current_path))
+#setwd(paste(dirname(current_path),'/../../bld/',sep=""))
+set_wd <- function(){
+  setwd("/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/bld")
+  source("project_paths.r")
+  setwd("/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/")
+}
+#set_wd()
+#pwd()
+
+print('loaded project paths')
+
+
+#setwd(dirname(current_path ))
+#source("Function_PowerCurves.R")
+
+#source(src.model_code.sample_size_functions.R)
+#source(src.model_code.n_tree_functions.R)
+#source(bld.project_paths.r)
+#pwd()
 
 #path_ntf <<-paste(PATH_IN_MODEL_CODE,'/n_tree_functions.R', sep="")
 #source(path_ntf)
@@ -50,37 +85,51 @@ predict_forest <- function(dataframe, testset, setup){
   rf_cov = abs(rf_tau - true_effect) <= 1.96 * rf_se
   rf_covered = mean(rf_cov)
   rf_mse = mean((rf_tau - true_effect)^2)
-  return (cbind(n, d, rf_covered, rf_mse))
+  return (cbind(n, d, rf_covered, rf_mse, n_tree, sample_size))
 }
-analysis <- predict_forest(data_1, test_data_1, setup)
 
-sR <- function(x, n=2){
+sR <- function(x, n=1){
   substr(x, nchar(x)-n+1, nchar(x))
 }
+
 
 write_data <- function(setup, analysis){
   if (setup$x_distr == "normal"){
     cov <- do.call("cbind",setup$x_cov)
     n_corr = nnzero((1*upper.tri(cov))*cov)}
   if (setup$x_distr == "uniform"){n_corr = 0}
+  x_distr = setup$x_distr
+  sigma = setup$sigma
+  prop_funct = sR(setup$propensity_function)
+  te_funct = sR(setup$treatment_effect_function)
+  foresttype = setup$foresttype
   
-  data = data.frame(
-    analysis,  setup$x_distr, setup$sigma, sR(setup$propensity_function), sR(setup$treatment_effect_function),
-    sR(setup$sample_size_function), sR(setup$n_tree_function), setup$foresttype
-    )
+  return(data.frame(analysis,  n_corr, x_distr, sigma, prop_funct, te_funct, foresttype))
 }
-y=write_data(setup, analysis)
 
-if (__name__ == "__main__"){
-  args = commandArgs()
-  setup_name = args[1]
-  n = args[2]
-  rep_number = args[3]
-  n_test = args[4]
+print('loaded first two functions')
+
+
+run_and_write <- function(n_test, setup_name, n, rep_number){
   
+  #sys.argv[4] = n_test
+  # length(sys.argv)
+  #setup = 'setup_1'
+  #n = '50'
+  #rep_number = '1'
+  #n_test = '100'
+
+  #path_to_pp = paste(pp,'/project_paths.r',sep="")
+  #source(path_to_pp)
+  set_wd()
+  source(paste(PATH_IN_MODEL_CODE,'/sample_size_functions.R',sep=""))
+  source(paste(PATH_IN_MODEL_CODE,'/n_tree_functions.R',sep=""))
+
   path_data <<-paste(PATH_OUT_DATA,"/", setup_name,"/sample_",setup_name,"_n=",n,"_rep_", rep_number, ".json", sep="")
   path_test_data <<- paste(PATH_OUT_DATA,"/", setup_name, "/sample_", setup_name, "_n=", n_test, "_rep_test.json", sep="")
   path_model_specs <<-paste(PATH_IN_MODEL_SPECS,"/", setup_name,".json", sep="")
+  path_out <<- paste(PATH_OUT_ANALYSIS, '/analysis_data_',setup_name,'_',n,'_',rep_number,'.csv', sep="")
+  #path_out <<- paste(PATH_OUT_ANALYSIS, '/analysis_data.csv', sep="")
   
   setup <- fromJSON(path_model_specs)
   data <- as.data.frame(do.call("cbind", fromJSON(path_data)))
@@ -89,20 +138,68 @@ if (__name__ == "__main__"){
   analysis <- predict_forest(data, test_data, setup)
   data <- write_data(setup, analysis)
   
+  dir.create(PATH_OUT_ANALYSIS, showWarnings = FALSE)
+  
+  write.table(data, path_out , sep = ",", append = TRUE, quote = FALSE, col.names = FALSE, row.names = FALSE)
 }
+print('loaded all functions')
+
+#setup_name = 'setup_1'
+# sys.argv = commandArgs()
+# sys.argv[1] = setup_name
+# sys.argv[2] = n
+# sys.argv[3] = rep_number
+# sys.argv[4] = n_test
+# length(sys.argv)
 
 
-n_test=1000
+args = commandArgs(trailingOnly = TRUE)
+n_test = args[1]
+setup_name = args[2]
+n = args[3]
+rep_number = args[4]
+print('defined command arguments')
+print(args)
 
 
-cbind(analysis, setup$x_distr)
-datdata_frame(analysis)
-typeof(analysis)
+run_and_write(n_test, setup_name, n, rep_number)
+print('ran script once')
+
+
+# path_data <<-paste(PATH_OUT_DATA,"/", args[1],"/sample_",args[1],"_n=",args[2],"_rep_", args[3], ".json", sep="")
+# path_test_data <<- paste(PATH_OUT_DATA,"/", setup, "/sample_", setup, "_n=", n_test, "_rep_test.json", sep="")
+# path_model_specs <<-paste(PATH_IN_MODEL_SPECS,"/", setup,".json", sep="")
+# path_out <<- paste(PATH_OUT_ANALYSIS, '/analysis_data_',setup,'_',n,'_',rep_number,'.csv', sep="")
+# 
+# setup <- fromJSON(path_model_specs)
+# data <- as.data.frame(do.call("cbind", fromJSON(path_data)))
+# test_data <- as.data.frame(do.call("cbind", fromJSON(path_test_data)))
+# 
+# analysis <- predict_forest(data, test_data, setup)
+# data <- write_data(setup, analysis)
+# 
+# dir.create(PATH_OUT_ANALYSIS, showWarnings = FALSE)
+# write.table(data, path_out , sep = ",", append = TRUE, quote = FALSE, col.names = FALSE, row.names = FALSE)
+# 
+
+
+
+#setup = "setup_1"
+#n = "50"
+#rep_number="1"
+#n_test = "100"
+#run_and_write(setup, n , rep_number, n_test)
+
+
+#run_and_write()
+#analysis <- predict_forest(data_1, test_data_1, setup)
+#y=write_data(setup, analysis)
+#path_out= paste(PATH_OUT_ANALYSIS, '/Data.csv', sep="")
+#write.table(y, path_out , sep = ",", append = TRUE, quote = FALSE, col.names = FALSE, row.names = FALSE)
+
 #pp <<- '/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/bld/project_paths.r'
 #path <<- '/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/bld/out/data/setup_1/sample_setup_1_n=50_rep_0.json'
 #path_specs <<- '/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/src/model_specs/setup_1.json'
 #setup <- fromJSON(path_specs)
 #data_1 <- as.data.frame(do.call("cbind", fromJSON(path)))
 #test_data_1 <- as.data.frame(do.call("cbind", fromJSON(path_test)))
-
-
