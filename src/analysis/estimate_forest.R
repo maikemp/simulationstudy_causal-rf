@@ -9,31 +9,12 @@ package.check <- lapply(packages, FUN = function(x) {
   }
 })
 print('loaded all packages')
-#current_path <- function() {
- # cmdArgs <- commandArgs(trailingOnly = FALSE)
-  #needle <- "--file="
-#  match <- grep(needle, cmdArgs)
- # if (length(match) > 0) {
-  #  # Rscript
-   # return(normalizePath(sub(needle, "", cmdArgs[match])))
-#  } else {
- #   # 'source'd via R console
-  #  return(normalizePath(sys.frames()[[1]]$ofile))
-#  }
-#}
 
-#current_path <- dirname(sys.frame(1)$ofile)
-#current_path <- getActiveDocumentContext()$path 
-#current_path <- current_path()
-#setwd(dirname(current_path))
-#setwd(paste(dirname(current_path),'/../../bld/',sep=""))
-set_wd <- function(){
-  setwd("/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/bld")
-  source("project_paths.r")
-  setwd("/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/")
-}
-#set_wd()
-#pwd()
+
+source("project_paths.r")
+
+source(paste(PATH_IN_MODEL_CODE,'/sample_size_functions.R',sep=""))
+source(paste(PATH_IN_MODEL_CODE,'/n_tree_functions.R',sep=""))
 
 print('loaded project paths')
 
@@ -112,19 +93,6 @@ print('loaded first two functions')
 
 run_and_write <- function(n_test, setup_name, n, rep_number){
   
-  #sys.argv[4] = n_test
-  # length(sys.argv)
-  #setup = 'setup_1'
-  #n = '50'
-  #rep_number = '1'
-  #n_test = '100'
-
-  #path_to_pp = paste(pp,'/project_paths.r',sep="")
-  #source(path_to_pp)
-  set_wd()
-  source(paste(PATH_IN_MODEL_CODE,'/sample_size_functions.R',sep=""))
-  source(paste(PATH_IN_MODEL_CODE,'/n_tree_functions.R',sep=""))
-
   path_data <<-paste(PATH_OUT_DATA,"/", setup_name,"/sample_",setup_name,"_n=",n,"_rep_", rep_number, ".json", sep="")
   path_test_data <<- paste(PATH_OUT_DATA,"/", setup_name, "/sample_", setup_name, "_n=", n_test, "_rep_test.json", sep="")
   path_model_specs <<-paste(PATH_IN_MODEL_SPECS,"/", setup_name,".json", sep="")
@@ -144,43 +112,18 @@ run_and_write <- function(n_test, setup_name, n, rep_number){
 }
 print('loaded all functions')
 
-#setup_name = 'setup_1'
-# sys.argv = commandArgs()
-# sys.argv[1] = setup_name
-# sys.argv[2] = n
-# sys.argv[3] = rep_number
-# sys.argv[4] = n_test
-# length(sys.argv)
-
-
 args = commandArgs(trailingOnly = TRUE)
 n_test = args[1]
 setup_name = args[2]
 n = args[3]
 rep_number = args[4]
+
 print('defined command arguments')
 print(args)
 
 
 run_and_write(n_test, setup_name, n, rep_number)
 print('ran script once')
-
-
-# path_data <<-paste(PATH_OUT_DATA,"/", args[1],"/sample_",args[1],"_n=",args[2],"_rep_", args[3], ".json", sep="")
-# path_test_data <<- paste(PATH_OUT_DATA,"/", setup, "/sample_", setup, "_n=", n_test, "_rep_test.json", sep="")
-# path_model_specs <<-paste(PATH_IN_MODEL_SPECS,"/", setup,".json", sep="")
-# path_out <<- paste(PATH_OUT_ANALYSIS, '/analysis_data_',setup,'_',n,'_',rep_number,'.csv', sep="")
-# 
-# setup <- fromJSON(path_model_specs)
-# data <- as.data.frame(do.call("cbind", fromJSON(path_data)))
-# test_data <- as.data.frame(do.call("cbind", fromJSON(path_test_data)))
-# 
-# analysis <- predict_forest(data, test_data, setup)
-# data <- write_data(setup, analysis)
-# 
-# dir.create(PATH_OUT_ANALYSIS, showWarnings = FALSE)
-# write.table(data, path_out , sep = ",", append = TRUE, quote = FALSE, col.names = FALSE, row.names = FALSE)
-# 
 
 
 

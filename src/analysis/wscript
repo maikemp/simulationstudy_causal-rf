@@ -21,6 +21,7 @@ def build(ctx):
                         source='estimate_forest.R',
         
                         deps=[
+                            '../../project_paths.r',
                             ctx.path_to(ctx, 'IN_MODEL_CODE', 'sample_size_functions.R'),
                             ctx.path_to(ctx, 'IN_MODEL_CODE', 'sample_size_functions.R'),
                             ctx.path_to(ctx, 'IN_MODEL_CODE', 'n_tree_functions.R'),
