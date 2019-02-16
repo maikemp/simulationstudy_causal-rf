@@ -1,5 +1,4 @@
 packages = c("R.utils","pracma","Matrix","dplyr","RJSONIO","devtools","randomForestCI","causalForest", "mgcv", "Hmisc")
-#library(rjson)
 
 package.check <- lapply(packages, FUN = function(x) {
   if (!require(x, character.only = TRUE)) {
@@ -14,24 +13,9 @@ source(paste(PATH_IN_MODEL_CODE,'/sample_size_functions.R',sep=""))
 source(paste(PATH_IN_MODEL_CODE,'/n_tree_functions.R',sep=""))
 
 
-# setwd(dirname(current_path ))
-# source("Function_PowerCurves.R")
-# 
-# source(src.model_code.sample_size_functions.R)
-# source(src.model_code.n_tree_functions.R)
-# source(bld.project_paths.r)
-# pwd()
-# 
-# path_ntf <<-paste(PATH_IN_MODEL_CODE,'/n_tree_functions.R', sep="")
-# source(path_ntf)
-# path_ssf <<-paste(PATH_IN_MODEL_CODE,'/sample_size_functions.R', sep="")
-# source(path_ssf)
-# 
-# predict_forest(dataframe, testset, setup)
-
 predict_forest <- function(dataframe, testset, setup){
-  X <- select(dataframe, starts_with('X_'))
-  X_test <- select(testset, starts_with('X_'))
+  X <- dplyr::select(dataframe, starts_with('X_'))
+  X_test <- dplyr::select(testset, starts_with('X_'))
   Y <- dataframe$Y
   W <- dataframe$W
   true_effect <- testset$true_te
@@ -110,8 +94,6 @@ run_and_write <- function(n_test, setup_name, n, rep_number){
   
   export_json <- toJSON(data)
   write(export_json, path_out)
-  
-  #write.table(data, path_out , sep = ",", append = TRUE, quote = FALSE, col.names = FALSE, row.names = FALSE)
 }
 
 args = commandArgs(trailingOnly = TRUE)
@@ -122,27 +104,3 @@ rep_number = args[4]
 
 run_and_write(n_test, setup_name, n, rep_number)
 
-# setup_name = "setup_3"
-# n = "50"
-# rep_number="2"
-# n_test = "100"
-# run_and_write(n_test, setup_name, n, rep_number)
-
-
-# 
-# run_and_write()
-# analysis <- predict_forest(data_1, test_data_1, setup)
-# y=write_data(setup, analysis)
-# path_out= paste(PATH_OUT_ANALYSIS, '/Data.csv', sep="")
-# write.table(y, path_out , sep = ",", append = TRUE, quote = FALSE, col.names = FALSE, row.names = FALSE)
-
-# pp <<- '/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/bld/project_paths.r'
-# source(pp)
-# path <<- '/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/bld/out/data/setup_1/sample_setup_1_n=50_rep_0.json'
-# path_test <<- '/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/bld/out/data/setup_1/sample_setup_1_n=100_rep_test.json'
-# path_specs <<- '/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/src/model_specs/setup_1.json'
-# setup <- fromJSON(path_specs)
-# data_1 <- as.data.frame(do.call("cbind", fromJSON(path)))
-# dataframe=data_1
-# test_data_1 <- as.data.frame(do.call("cbind", fromJSON(path_test)))
-# testset=test_data_1
