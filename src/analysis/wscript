@@ -8,28 +8,35 @@ n_test = str(sim_param["n_test_points"])
 
 def build(ctx):
 
-
-    for setup_name in sim_param["list_of_setups"]:
-        for n in n_list:
-                for rep_number in repetitions:
-
-                    ctx(
-                        features='run_r_script',
-                        source='estimate_forest.R',
+    for method in sim_param["list_of_methods"]:
+        for setup_name in sim_param["list_of_setups"]:
+            for n in n_list:
+                    for rep_number in repetitions:
+    
+                        ctx(
+                            features='run_r_script',
+                            source='estimate_' + method + '.R',
         
-                        deps=[
-                            '../../project_paths.r',
-                            ctx.path_to(ctx, 'IN_MODEL_CODE', 'sample_size_functions.R'),
-                            ctx.path_to(ctx, 'IN_MODEL_CODE', 'n_tree_functions.R'),
-                            ctx.path_to(ctx, 'IN_MODEL_SPECS', '{}.json'.format(setup_name)),
-                            ctx.path_to(ctx, 'OUT_DATA_' + setup_name.upper(), 'sample_{}_n={}_rep_test.json'.format(setup_name, n_test)),
-                            ctx.path_to(ctx, 'OUT_DATA_' + setup_name.upper(), 'sample_{}_n={}_rep_{}.json'.format(setup_name, n, rep_number))
+                            deps=[
+                                '../../project_paths.r',
+                                ctx.path_to(ctx, 'IN_MODEL_CODE', 'sample_size_functions.R'),
+                                ctx.path_to(ctx, 'IN_MODEL_CODE', 'n_tree_functions.R'),
+                                ctx.path_to(ctx, 'IN_MODEL_SPECS', '{}.json'.format(setup_name)),
+                                ctx.path_to(ctx, 'OUT_DATA_' + setup_name.upper(), 'sample_{}_n={}_rep_test.json'.format(setup_name, n_test)),
+                                ctx.path_to(
+                                    ctx, 'OUT_DATA_' + setup_name.upper(), 'sample_{}_n={}_rep_{}.json'.format(setup_name, n, rep_number)
+                                )
 
-                        ],
-                        target=[ctx.path_to(ctx, 'OUT_ANALYSIS_FOREST', 'analysis_data_{}_n={}_rep_{}.json'.format(setup_name,n,rep_number))],
-                        append=[n_test, setup_name, n, rep_number],
-                        name='get_analysis_data_{}_{}_{}'.format(setup_name, n, rep_number)
-                        )
+                            ],
+                            target=[
+                                ctx.path_to(
+                                    ctx, 'OUT_ANALYSIS_'+method.upper(), method+'_data_{}_n={}_rep_{}.json'.format(setup_name,n,rep_number)
+                                )
+                            ],
+                            append=[n_test, setup_name, n, rep_number],
+                            name='get_{}_data_{}_{}_{}'.format(method,setup_name, n, rep_number)
+                            )
+
 
     
     for model in 'baseline', 'max_moves_2':

@@ -26,8 +26,10 @@ def set_project_paths(ctx):
     pp["OUT_DATA"] = f"{out}/out/data"
 
     pp["OUT_ANALYSIS"] = f"{out}/out/analysis"
-    pp["OUT_ANALYSIS_FOREST"] = f"{out}/out/analysis/forest"
-    #pp["OUT_ANALYSIS_K-NN"] = f"{out}/out/analysis/k-nn"
+
+    for method in sim_param["list_of_methods"]:
+        pp["OUT_ANALYSIS_" + method.upper()] = f"{out}/out/analysis/{method}"
+
     pp["OUT_FINAL"] = f"{out}/out/final"
     pp["OUT_FIGURES"] = f"{out}/out/figures"
     pp["OUT_TABLES"] = f"{out}/out/tables"

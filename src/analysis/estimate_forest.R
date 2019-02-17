@@ -58,6 +58,7 @@ sR <- function(x, n=1){
 
 write_data <- function(setup, setup_name, analysis){
   
+  # Determine the number of correlated variables.
   if (setup$x_distr == "normal"){
     cov <- do.call("cbind",setup$x_cov)
     n_corr = nnzero((1*upper.tri(cov))*cov)}
@@ -74,12 +75,12 @@ write_data <- function(setup, setup_name, analysis){
 }
 
 
-run_and_write <- function(n_test, setup_name, n, rep_number){
+run_and_write_forest <- function(n_test, setup_name, n, rep_number){
   
   path_data <<-paste(PATH_OUT_DATA,"/", setup_name,"/sample_",setup_name,"_n=",n,"_rep_", rep_number, ".json", sep="")
   path_test_data <<- paste(PATH_OUT_DATA,"/", setup_name, "/sample_", setup_name, "_n=", n_test, "_rep_test.json", sep="")
   path_model_specs <<-paste(PATH_IN_MODEL_SPECS,"/", setup_name,".json", sep="")
-  path_out <<- paste(PATH_OUT_ANALYSIS_FOREST, '/analysis_data_',setup_name,'_n=', n, '_rep_', rep_number,'.json', sep="")
+  path_out <<- paste(PATH_OUT_ANALYSIS_FOREST, '/forest_data_',setup_name,'_n=', n, '_rep_', rep_number,'.json', sep="")
   #path_out <<- paste(PATH_OUT_ANALYSIS, '/analysis_data.json', sep="")
   
   setup <- fromJSON(path_model_specs)
@@ -88,9 +89,9 @@ run_and_write <- function(n_test, setup_name, n, rep_number){
   
   analysis <- predict_forest(data, test_data, setup)
   data <- write_data(setup, setup_name, analysis)
-  data$id <- paste(setup_name, '_n=', n, '_rep_', rep_number)
-  
-  dir.create(PATH_OUT_ANALYSIS, showWarnings = FALSE)
+  data$id <- paste(setup_name, '_n=', n, '_rep_', rep_number,sep="")
+
+  #dir.create(PATH_OUT_ANALYSIS, showWarnings = FALSE)
   
   export_json <- toJSON(data)
   write(export_json, path_out)
@@ -102,5 +103,5 @@ setup_name = args[2]
 n = args[3]
 rep_number = args[4]
 
-run_and_write(n_test, setup_name, n, rep_number)
+run_and_write_forest(n_test, setup_name, n, rep_number)
 
