@@ -63,3 +63,29 @@ def build(ctx):
             append=model,
             name='schelling_{}'.format(model)
         )
+
+    dep_list = [
+        '../../project_paths.r',
+        ctx.path_to(ctx, 'IN_MODEL_SPECS', 'simulation_parameters.json') 
+    ]
+
+    for method in sim_param["list_of_methods"]:
+        for setup_name in sim_param["list_of_setups"]:
+            for n in n_list:
+                    for rep_number in repetitions:
+
+                        dep_list.extend([
+                            ctx.path_to(
+                                    ctx, 'OUT_ANALYSIS_'+method.upper(), method+'_data_{}_n={}_rep_{}.json'.format(setup_name,n,rep_number)
+                                )                                
+                        ])
+
+    ctx(
+        features='run_r_script',
+        source = 'stack_data.R',
+        deps = dep_list,
+        target = ctx.path_to(ctx, 'OUT_ANALYSIS', 'full_analysis_data.csv'),
+        name = 'stack_data'
+    )
+
+

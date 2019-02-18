@@ -83,7 +83,7 @@ run_and_write_knn <- function(n_test, setup_name, n, rep_number){
   
   dir.create(PATH_OUT_ANALYSIS_KNN, showWarnings = FALSE)
   
-  export_json <- toJSON(out_data)
+  export_json <- toJSON(as.data.frame(out_data))
   write(export_json, path_out)
 }
 
