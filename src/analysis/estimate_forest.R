@@ -60,9 +60,7 @@ write_data <- function(setup, setup_name, analysis){
   
   # Determine the number of correlated variables.
   if (setup$x_distr == "normal"){
-    cov <- do.call("cbind",setup$x_cov)
-    n_corr = nnzero((1*upper.tri(cov))*cov)}
-  
+    n_corr = setup$x_ncorr}
   if (setup$x_distr == "uniform"){n_corr = 0}
   
   x_distr = setup$x_distr
@@ -75,12 +73,12 @@ write_data <- function(setup, setup_name, analysis){
 }
 
 
-run_and_write_forest <- function(n_test, setup_name, n, rep_number){
+run_and_write_forest <- function(setup_name, d, rep_number){
   
-  path_data <<-paste(PATH_OUT_DATA,"/", setup_name,"/sample_",setup_name,"_n=",n,"_rep_", rep_number, ".json", sep="")
-  path_test_data <<- paste(PATH_OUT_DATA,"/", setup_name, "/sample_", setup_name, "_n=", n_test, "_rep_test.json", sep="")
+  path_data <<-paste(PATH_OUT_DATA,"/", setup_name,"/sample_",setup_name,"_d=",d,"_rep_", rep_number, ".json", sep="")
+  path_test_data <<- paste(PATH_OUT_DATA,"/", setup_name, "/sample_", setup_name, "_d=", d, "_rep_test.json", sep="")
   path_model_specs <<-paste(PATH_IN_MODEL_SPECS,"/", setup_name,".json", sep="")
-  path_out <<- paste(PATH_OUT_ANALYSIS_FOREST, '/forest_data_',setup_name,'_n=', n, '_rep_', rep_number,'.json', sep="")
+  path_out <<- paste(PATH_OUT_ANALYSIS_FOREST, '/forest_data_',setup_name,'_d=', d, '_rep_', rep_number,'.json', sep="")
   #path_out <<- paste(PATH_OUT_ANALYSIS, '/analysis_data.json', sep="")
   
   setup <- fromJSON(path_model_specs)
@@ -89,7 +87,7 @@ run_and_write_forest <- function(n_test, setup_name, n, rep_number){
   
   analysis <- predict_forest(data, test_data, setup)
   data <- write_data(setup, setup_name, analysis)
-  data$id <- paste(setup_name, '_n=', n, '_rep_', rep_number,sep="")
+  data$id <- paste(setup_name, '_d=', d, '_rep_', rep_number,sep="")
 
   #dir.create(PATH_OUT_ANALYSIS, showWarnings = FALSE)
   
@@ -98,10 +96,9 @@ run_and_write_forest <- function(n_test, setup_name, n, rep_number){
 }
 
 args = commandArgs(trailingOnly = TRUE)
-n_test = args[1]
-setup_name = args[2]
-n = args[3]
-rep_number = args[4]
+setup_name = args[1]
+d = args[2]
+rep_number = args[3]
 
-run_and_write_forest(n_test, setup_name, n, rep_number)
+run_and_write_forest(setup_name, d, rep_number)
 

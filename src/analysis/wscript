@@ -3,22 +3,21 @@ import json
 
 sim_param = json.load(open('src/model_specs/simulation_parameters.json'), encoding='utf-8')
 repetitions = [str(par) for par in range(sim_param['rep_number'])]
-n_list = [str(par) for par in sim_param['n_list']]
-n_test = str(sim_param["n_test_points"])
+d_list = [str(par) for par in sim_param['d_list']]
 
 def build(ctx):
 
     for method in sim_param["list_of_methods"]:
         for setup_name in sim_param["list_of_setups"]:
-            for n in n_list:
+            for d in d_list:
                     for rep_number in repetitions:
 
                         deplist = [
                             '../../project_paths.r',
                             ctx.path_to(ctx, 'IN_MODEL_SPECS', '{}.json'.format(setup_name)),
-                            ctx.path_to(ctx, 'OUT_DATA_' + setup_name.upper(), 'sample_{}_n={}_rep_test.json'.format(setup_name, n_test)),
+                            ctx.path_to(ctx, 'OUT_DATA_' + setup_name.upper(), 'sample_{}_d={}_rep_test.json'.format(setup_name, d)),
                             ctx.path_to(
-                                ctx, 'OUT_DATA_' + setup_name.upper(), 'sample_{}_n={}_rep_{}.json'.format(setup_name, n, rep_number)
+                                ctx, 'OUT_DATA_' + setup_name.upper(), 'sample_{}_d={}_rep_{}.json'.format(setup_name, d, rep_number)
                                 )
                         ]
 
@@ -36,11 +35,11 @@ def build(ctx):
                             deps=deplist,
                             target=[
                                 ctx.path_to(
-                                    ctx, 'OUT_ANALYSIS_'+method.upper(), method+'_data_{}_n={}_rep_{}.json'.format(setup_name,n,rep_number)
+                                    ctx, 'OUT_ANALYSIS_'+method.upper(), method+'_data_{}_d={}_rep_{}.json'.format(setup_name,d,rep_number)
                                 )
                             ],
-                            append=[n_test, setup_name, n, rep_number],
-                            name='get_{}_data_{}_{}_{}'.format(method, setup_name, n, rep_number)
+                            append=[setup_name, d, rep_number],
+                            name='get_{}_data_{}_{}_{}'.format(method, setup_name, d, rep_number)
                             )
 
 
@@ -71,12 +70,12 @@ def build(ctx):
 
     for method in sim_param["list_of_methods"]:
         for setup_name in sim_param["list_of_setups"]:
-            for n in n_list:
+            for d in d_list:
                     for rep_number in repetitions:
 
                         dep_list.extend([
                             ctx.path_to(
-                                    ctx, 'OUT_ANALYSIS_'+method.upper(), method+'_data_{}_n={}_rep_{}.json'.format(setup_name,n,rep_number)
+                                    ctx, 'OUT_ANALYSIS_'+method.upper(), method+'_data_{}_d={}_rep_{}.json'.format(setup_name,d,rep_number)
                                 )                                
                         ])
 

@@ -1,9 +1,8 @@
 {
-    "x_mean": [0, 2, 4],
+    "n": 100,
     "x_distr": "normal",
-    "x_cov": [[1, 0, 0.5],[0, 1, 0],[0.5, 0, 1]],
+    "x_ncorr": "d",
     "sigma": 1,
-    "d": 3,
     "propensity_function": "propensity_function_1",
     "treatment_effect_function": "treatment_effect_function_1",
     "main_effect_function": "main_effect_function_1",

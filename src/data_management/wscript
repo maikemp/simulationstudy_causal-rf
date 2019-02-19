@@ -3,7 +3,7 @@ import json
 
 sim_param = json.load(open('src/model_specs/simulation_parameters.json'), encoding='utf-8')
 repetitions = [str(par) for par in range(sim_param['rep_number'])]
-n_list = [str(par) for par in sim_param['n_list']]
+d_list = [str(par) for par in sim_param['d_list']]
 
 
 def build(ctx):
@@ -18,12 +18,9 @@ def build(ctx):
     
     for setup in sim_param["list_of_setups"]:
 
-        for n in n_list:   
+        for d in d_list:   
         
-            if n == str(sim_param['n_test_points']):
-                rep = repetitions + ['test'] 
-            else:
-                rep = repetitions
+            rep = repetitions + ['test'] 
             
             for rep_number in rep:
                 
@@ -37,10 +34,10 @@ def build(ctx):
                         ctx.path_to(ctx,'IN_MODEL_CODE', 'propensity_functions.py')
                     ],
                     target=[
-                        ctx.path_to(ctx, 'OUT_DATA_' + setup.upper(), 'sample_{}_n={}_rep_{}.json'.format(setup, n, rep_number))
+                        ctx.path_to(ctx, 'OUT_DATA_' + setup.upper(), 'sample_{}_d={}_rep_{}.json'.format(setup, d, rep_number))
                     ],
-                    append=[setup, n, rep_number],
-                    name='sample_{}_n={}_rep_{}'.format(setup, n, rep_number)
+                    append=[setup, d, rep_number],
+                    name='sample_{}_d={}_rep_{}'.format(setup, d, rep_number)
                 )
 
 

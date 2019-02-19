@@ -57,13 +57,13 @@ predict_knn <- function(dataframe, testset, setup, k){
   return(cbind(knn_covered, knn_mse))
 }
 
-run_and_write_knn <- function(n_test, setup_name, n, rep_number){
+run_and_write_knn <- function(setup_name, d, rep_number){
   
-  path_data <<-paste(PATH_OUT_DATA,"/", setup_name,"/sample_",setup_name,"_n=",n,"_rep_", rep_number, ".json", sep="")
-  path_test_data <<- paste(PATH_OUT_DATA,"/", setup_name, "/sample_", setup_name, "_n=", n_test, "_rep_test.json", sep="")
+  path_data <<-paste(PATH_OUT_DATA,"/", setup_name,"/sample_",setup_name,"_d=",d,"_rep_", rep_number, ".json", sep="")
+  path_test_data <<- paste(PATH_OUT_DATA,"/", setup_name, "/sample_", setup_name, "_d=", d, "_rep_test.json", sep="")
   path_model_specs <<-paste(PATH_IN_MODEL_SPECS,"/", setup_name,".json", sep="")
   # path_out <<- paste(PATH_OUT_ANALYSIS, '/analysis_data.json', sep="")
-  path_out <<- paste(PATH_OUT_ANALYSIS_KNN, '/knn_data_',setup_name,'_n=', n, '_rep_', rep_number,'.json', sep="")
+  path_out <<- paste(PATH_OUT_ANALYSIS_KNN, '/knn_data_',setup_name,'_d=', d, '_rep_', rep_number,'.json', sep="")
   
   setup <- fromJSON(path_model_specs)
   data <- as.data.frame(do.call("cbind", fromJSON(path_data)))
@@ -78,7 +78,7 @@ run_and_write_knn <- function(n_test, setup_name, n, rep_number){
     analysis <- cbind(analysis, analysis_k)
   }
 
-  id <- paste(setup_name, '_n=', n, '_rep_', rep_number, sep="")
+  id <- paste(setup_name, '_d=', d, '_rep_', rep_number, sep="")
   out_data <- cbind(id, analysis)
   
   dir.create(PATH_OUT_ANALYSIS_KNN, showWarnings = FALSE)
@@ -89,13 +89,12 @@ run_and_write_knn <- function(n_test, setup_name, n, rep_number){
 
 
 args = commandArgs(trailingOnly = TRUE)
-n_test = args[1]
-setup_name = args[2]
-n = args[3]
-rep_number = args[4]
+setup_name = args[1]
+d = args[2]
+rep_number = args[3]
 
 
-run_and_write_knn(n_test, setup_name, n, rep_number)
+run_and_write_knn(setup_name, d, rep_number)
 
 
 
