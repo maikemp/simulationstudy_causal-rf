@@ -39,15 +39,13 @@ def _get_covariance_matrix(d, n_corr):
 def get_simulated_sample(setup, d):
     """Simulate a sample ..."""
     
-    #if setup['x_distr'] == 'normal':
-     #   X = np.random.multivariate_normal(setup['x_mean'], setup['x_cov'], setup['n'])
     if setup['x_distr'] == 'normal':
         if setup['x_ncorr'] == '0':
             cov = _get_covariance_matrix(d, 0)
         if setup['x_ncorr'] == 'd':
             cov = _get_covariance_matrix(d, d)        
         else:
-            raise ValueError('No valid value for number of correlated variables.')
+            raise ValueError('No defined value for number of corr. variables.')
         X = np.random.multivariate_normal(np.zeros(d),cov, setup['n'])
     if setup['x_distr'] == 'uniform':
         X = np.random.uniform(setup['x_low'], setup['x_high'],(setup['n'], d))

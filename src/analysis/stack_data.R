@@ -8,12 +8,6 @@ package.check <- lapply(packages, FUN = function(x) {
 })
 
 source("project_paths.r")
-# pp <<- '/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/bld/project_paths.r'
-# source(pp)
-# path_specs <<- '/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/src/model_specs/setup_1.json'
-# setup <- fromJSON(path_specs)
-# path_sim_param <<- '/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/src/model_specs/simulation_parameters.json'
-# sim_param <- fromJSON(path_sim_param)
 
 create_dataset <- function() {
   sim_param <<- fromJSON(paste(PATH_IN_MODEL_SPECS,"/simulation_parameters.json", sep=""))
@@ -32,7 +26,6 @@ create_dataset <- function() {
         }
       }
     }
-    # all_data <- merge(method_data,method_data_1,by="id")
     all_data <- cbind(all_data, method_data)
   }
 
