@@ -4,5 +4,5 @@
     "k_list": [10,15],
     "d_list": [3, 5, 10],
     "n_test_points": 100 ,
-    "list_of_methods": ["forest", "knn"]
+    "list_of_methods": ["crf", "knn"]
 }

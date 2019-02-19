@@ -74,7 +74,7 @@ run_and_write_knn <- function(setup_name, d, rep_number){
   analysis = list()
   for (k in sim_param$k_list){
     analysis_k <- predict_knn(data, test_data, setup, k)
-    colnames(analysis_k)<- c(paste('covered_k=', k, sep=""),paste('mse_k=', k, sep=""))
+    colnames(analysis_k)<- c(paste('knn_covered_', k, sep=""),paste('knn_mse_', k, sep=""))
     analysis <- cbind(analysis, analysis_k)
   }
 
