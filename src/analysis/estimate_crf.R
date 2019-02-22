@@ -1,3 +1,13 @@
+'
+
+The file "estimate_crf.R" estimates treatment effects by causal forests 
+and confidence intervals for them using the causalForest functions 
+written by Wager & Athey and saves out data snippets with the analysis
+results.
+
+'
+
+
 packages = c("R.utils","pracma","Matrix","dplyr","RJSONIO","devtools","randomForestCI","causalForest", "mgcv", "Hmisc")
 
 package.check <- lapply(packages, FUN = function(x) {
@@ -7,8 +17,8 @@ package.check <- lapply(packages, FUN = function(x) {
   }
 })
 
-source("project_paths.r")
 
+source("project_paths.r")
 source(paste(PATH_IN_MODEL_CODE,'/sample_size_functions.R',sep=""))
 source(paste(PATH_IN_MODEL_CODE,'/n_tree_functions.R',sep=""))
 
@@ -60,8 +70,11 @@ write_data <- function(setup, setup_name, analysis){
   
   # Determine the number of correlated variables.
   if (setup$x_distr == "normal"){
-    n_corr = setup$x_ncorr}
-  if (setup$x_distr == "uniform"){n_corr = 0}
+    n_corr = setup$x_ncorr
+  }
+  if (setup$x_distr == "uniform"){
+    n_corr = 0
+  }
   
   x_distr = setup$x_distr
   sigma = setup$sigma

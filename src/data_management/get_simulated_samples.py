@@ -1,8 +1,11 @@
 """Draw simulated dataset using model specifications specified in
 IN_MODEL_SPECS and store in a numpy array.
 
-Module requires to be given a setup corresponding to a json file and a 
-repetition number indicating the repetition currently at for the simulation. 
+Module requires to be given a setup corresponding to a json file, the number of 
+independent variables as well as a repetition number indicating the repetition 
+currently at for the simulation. Furthermore, it loads the required functions 
+for the main effect, the treatment effect and the propensity score from the 
+repective modules in IN_MODEL_CODE.
 
 """
 
@@ -24,13 +27,14 @@ def _get_covariance_matrix(d, n_corr):
     are uncorrelated to all other variables.
 
     """
+    
     if n_corr > d:
         raise ValueError(
-            'Nr of corr. dvariables must not be larger than nr of variables'
+            'Nr of corr. variables must not be larger than nr of variables'
         )
     A = np.tril(np.random.uniform(-1, 1, (d, d)))
 
-    # Set rows of A to zero to make variables uncorrelated to the other variables
+    # Set rows of A to zero to make variables uncorrelated to other variables.
     diag = d
     for i in range(d-n_corr):
         diag = diag-1
@@ -40,7 +44,7 @@ def _get_covariance_matrix(d, n_corr):
 
 
 def get_simulated_sample(setup, d):
-    """Simulate a sample ..."""
+    """Draw a simulated sample according to a set of parameter values."""
 
     if setup['x_distr'] == 'normal':
         if setup['x_ncorr'] == '0':
@@ -67,7 +71,8 @@ def get_simulated_sample(setup, d):
         true_treat_effect + epsilon
 
     stack = np.column_stack((X, W, Y, true_treat_effect))
-
+    
+    # Name the columns so they can be identified easily.
     columns = list()
     for i in range(d):
         columns.append('X_{}'.format(i))

@@ -1,3 +1,11 @@
+'
+
+The file "stack_data.R" loads the data snippets produced by the 
+estimate_*.R files and stacks them together into a csv dataframe.
+
+'
+
+
 packages = c("RJSONIO","data.table")
 
 package.check <- lapply(packages, FUN = function(x) {

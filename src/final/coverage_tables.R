@@ -1,6 +1,12 @@
-# Create coverage tables with stargazer<3
+'
 
-packages = c("xtable","RJSONIO")
+The file "coverage_tables.R" uses the compact analysis data, averages 
+over simulation runs and makes a latex table out of the results.
+
+'
+
+
+packages = c("xtable", "RJSONIO")
 
 package.check <- lapply(packages, FUN = function(x) {
   if (!require(x, character.only = TRUE)) {
@@ -9,17 +15,6 @@ package.check <- lapply(packages, FUN = function(x) {
   }
 })
 source("project_paths.r")
-
-# pp <<- '/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/bld/project_paths.r'
-# source(pp)
-# path_sim <<- '/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/src/model_specs/simulation_parameters.json'
-# sim_param = fromJSON(path_sim)
-# 
-# k_list = sim_param$k_list
-# list_of_methods = sim_param$list_of_methods
-# d_list = sim_param$d_list
-# setup_name='setup_1'
-# test = create_output_table('setup_1')
 
 
 create_output_table <- function(setup_name){
@@ -46,8 +41,7 @@ create_output_table <- function(setup_name){
         }
         data_table = cbind(data_table, knn_values)
       }
-    }
-    else{
+    } else {
       values = data.frame()
       for (d in sim_param$d_list){
         coverage = mean(unlist(setup_data[paste0(method, "_covered")][setup_data$d==d,]))
