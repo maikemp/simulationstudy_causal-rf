@@ -73,7 +73,6 @@ write_to_latex <- function(output_table, setup_name){
   addtorow$command <- paste0(paste0('& \\multicolumn{', length(sim_param$list_of_methods)+length(sim_param$k_list)-1,'}{c}{', c('CI Coverage Rate', 'Mean Squared Error'), '}', collapse=''), '\\\\')
   
   path = paste0(PATH_OUT_TABLES, '/coverage_table_', setup_name, '.tex')
-  dir.create(PATH_OUT_TABLES, showWarnings = FALSE)
   print(xtab, add.to.row=addtorow, include.rownames=F, file= path)
   
 }

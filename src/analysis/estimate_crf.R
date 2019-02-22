@@ -90,8 +90,6 @@ run_and_write_forest <- function(setup_name, d, rep_number){
   data$id <- paste(setup_name, '_d=', d, '_rep_', rep_number,sep="")
   data$setup <- setup_name
 
-  #dir.create(PATH_OUT_ANALYSIS, showWarnings = FALSE)
-  
   export_json <- toJSON(data)
   write(export_json, path_out)
 }

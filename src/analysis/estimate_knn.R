@@ -81,8 +81,6 @@ run_and_write_knn <- function(setup_name, d, rep_number){
   id <- paste(setup_name, '_d=', d, '_rep_', rep_number, sep="")
   out_data <- cbind(id, analysis)
   
-  dir.create(PATH_OUT_ANALYSIS_KNN, showWarnings = FALSE)
-  
   export_json <- toJSON(as.data.frame(out_data))
   write(export_json, path_out)
 }
