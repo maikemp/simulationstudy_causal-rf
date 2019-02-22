@@ -1,6 +1,6 @@
 # Create coverage tables with stargazer<3
 
-packages = c("stargazer","RJSONIO")
+packages = c("xtable","RJSONIO")
 
 package.check <- lapply(packages, FUN = function(x) {
   if (!require(x, character.only = TRUE)) {
@@ -14,28 +14,70 @@ source("project_paths.r")
 # source(pp)
 # path_sim <<- '/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/src/model_specs/simulation_parameters.json'
 # sim_param = fromJSON(path_sim)
+# 
+# k_list = sim_param$k_list
+# list_of_methods = sim_param$list_of_methods
+# d_list = sim_param$d_list
+# setup_name='setup_1'
+# test = create_output_table('setup_1')
 
-k_list = sim_param$k_list
-list_of_methods = sim_param$list_of_methods
-d_list = sim_param$d_list
-setup_name='setup_1'
 
 create_output_table <- function(setup_name){
   
-  sim_param <<- fromJSON(paste(PATH_IN_MODEL_SPECS,"/simulation_parameters.json", sep=""))
+  sim_param <<- fromJSON(paste0(PATH_IN_MODEL_SPECS,"/simulation_parameters.json"))
   
-  n_col <- 1 + 2 * (length(k_list) + length(list_of_methods) -1)
-
-  analysis_data <- read.csv(paste(PATH_OUT_ANALYSIS,"/full_analysis_data.csv",sep=''))
+  analysis_data <- read.csv(paste0(PATH_OUT_ANALYSIS,"/full_analysis_data.csv"))
   setup_data <- analysis_data[analysis_data$setup==setup_name,]
   
+  data_table = data.frame(d = as.integer(sim_param$d_list))
+  
   for (method in sim_param$list_of_methods){
-    
-    
+    if (method == "knn"){
+      
+      for(k in sim_param$k_list){
+        
+        knn_values = data.frame()
+        for (d in sim_param$d_list){
+          coverage = mean(unlist(setup_data[paste0(method, "_covered_", k)][setup_data$d==d,]))
+          mse = mean(unlist(setup_data[paste0(method, "_mse_", k)][setup_data$d==d,]))
+          line = cbind(coverage, mse)
+          colnames(line)<- c(paste0("Coverage ", k, "-NN"),paste0("MSE ", k ,"-NN"))
+          knn_values = rbind(knn_values,line)
+        }
+        data_table = cbind(data_table, knn_values)
+      }
+    }
+    else{
+      values = data.frame()
+      for (d in sim_param$d_list){
+        coverage = mean(unlist(setup_data[paste0(method, "_covered")][setup_data$d==d,]))
+        mse = mean(unlist(setup_data[paste0(method, "_mse")][setup_data$d==d,]))
+        line = cbind(coverage, mse)
+        colnames(line)<- c(paste('Coverage', toupper(method)),paste('MSE', toupper(method)))
+        values = rbind(values,line)
+      }
+      data_table = cbind(data_table, values)
+    }
   }
-  
-  d = d_list
-  data_table = data.frame(d)
-  
-  
+  data_table <-cbind(data_table['d'], data_table[,(2:ncol(data_table))][, order(names(data_table[,(2:ncol(data_table))]))])
+  return(data_table)
 }
+
+
+args = commandArgs(trailingOnly = TRUE)
+setup_name = args[1]
+
+
+data_table <- create_output_table(setup_name)
+xtab <- xtable(data_table)
+colnames(xtab) <- gsub('^.* ', "", colnames(data_table))
+
+addtorow <- list()
+addtorow$pos <- list(-1)
+addtorow$command <- paste0(paste0('& \\multicolumn{3}{c}{', c('Coverage Rate', 'Mean Squared Error'), '}', collapse=''), '\\\\')
+
+
+
+print(xtab, add.to.row=addtorow, include.rownames=F)
+
+
