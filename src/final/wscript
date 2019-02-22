@@ -1,7 +1,24 @@
 #! python
+import json
 
+sim_param = json.load(open('src/model_specs/simulation_parameters.json'), encoding='utf-8')
+list_of_setups = sim_param["list_of_setups"]
 
 def build(ctx):
+
+    for setup in list_of_setups:
+        ctx(
+            features='run_r_script',
+            source='coverage_tables.R',
+            deps=[
+                ctx.path_to(ctx, 'OUT_ANALYSIS', 'full_analysis_data.csv'),
+                ctx.path_to(ctx, 'IN_MODEL_SPECS', 'simulation_parameters.json')
+            ],
+            target=ctx.path_to(ctx, 'OUT_TABLES', 'coverage_table_{}.tex'.format(setup)),
+            append=setup,
+            name='make_coverage_table_{}'.format(setup)
+        )
+
 
     for model in 'baseline', 'max_moves_2':
 

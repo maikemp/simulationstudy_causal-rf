@@ -63,21 +63,24 @@ create_output_table <- function(setup_name){
   return(data_table)
 }
 
-
+write_to_latex <- function(output_table, setup_name){
+  
+  xtab <-  xtable(output_table, caption = paste('Simulation results for', gsub('_', " ", setup_name)))
+  colnames(xtab) <- gsub('^.* ', "", colnames(output_table))
+  
+  addtorow <- list()
+  addtorow$pos <- list(-1)
+  addtorow$command <- paste0(paste0('& \\multicolumn{', length(sim_param$list_of_methods)+length(sim_param$k_list)-1,'}{c}{', c('CI Coverage Rate', 'Mean Squared Error'), '}', collapse=''), '\\\\')
+  
+  path = paste0(PATH_OUT_TABLES, '/coverage_table_', setup_name, '.tex')
+  dir.create(PATH_OUT_TABLES, showWarnings = FALSE)
+  print(xtab, add.to.row=addtorow, include.rownames=F, file= path)
+  
+}
 args = commandArgs(trailingOnly = TRUE)
 setup_name = args[1]
 
-
-data_table <- create_output_table(setup_name)
-xtab <- xtable(data_table)
-colnames(xtab) <- gsub('^.* ', "", colnames(data_table))
-
-addtorow <- list()
-addtorow$pos <- list(-1)
-addtorow$command <- paste0(paste0('& \\multicolumn{3}{c}{', c('Coverage Rate', 'Mean Squared Error'), '}', collapse=''), '\\\\')
-
-
-
-print(xtab, add.to.row=addtorow, include.rownames=F)
+output_table <- create_output_table(setup_name)
+write_to_latex(output_table, setup_name)
 
 
