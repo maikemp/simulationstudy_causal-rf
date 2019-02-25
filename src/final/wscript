@@ -12,7 +12,8 @@ def build(ctx):
             source='coverage_tables.R',
             deps=[
                 ctx.path_to(ctx, 'OUT_ANALYSIS', 'full_analysis_data.csv'),
-                ctx.path_to(ctx, 'IN_MODEL_SPECS', 'simulation_parameters.json')
+                ctx.path_to(ctx, 'IN_MODEL_SPECS', 'simulation_parameters.json'),
+                ctx.path_to(ctx, 'IN_MODEL_SPECS', 'k_list.json'),
             ],
             target=ctx.path_to(ctx, 'OUT_TABLES', 'coverage_table_{}.tex'.format(setup)),
             append=setup,

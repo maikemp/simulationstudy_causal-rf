@@ -1,8 +1,6 @@
 {
     "rep_number": 2,
     "list_of_setups": ["setup_1", "setup_2", "setup_3"],
-    "k_list": [10,15],
     "d_list": [3, 5, 10],
-    "n_test_points": 100 ,
     "list_of_methods": ["crf", "knn"]
 }

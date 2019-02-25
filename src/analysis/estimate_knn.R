@@ -74,12 +74,12 @@ run_and_write_knn <- function(setup_name, d, rep_number){
   data <- as.data.frame(do.call("cbind", fromJSON(path_data)))
   test_data <- as.data.frame(do.call("cbind", fromJSON(path_test_data)))
   
-  sim_param <<- fromJSON(paste(PATH_IN_MODEL_SPECS,"/simulation_parameters.json", sep=""))
+  k_list <<- fromJSON(paste(PATH_IN_MODEL_SPECS,"/k_list.json", sep=""))
   
-  # Run extra analysis for each k value in sim_param$k_list
+  # Run extra analysis for each k value in_param$k_list
   # and attach the results to the exported data frame.
   analysis = list()
-  for (k in sim_param$k_list){
+  for (k in k_list$k_list){
     analysis_k <- predict_knn(data, test_data, setup, k)
     colnames(analysis_k)<- c(paste('knn_covered_', k, sep=""),paste('knn_mse_', k, sep=""))
     analysis <- cbind(analysis, analysis_k)
