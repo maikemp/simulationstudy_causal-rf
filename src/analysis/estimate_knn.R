@@ -9,16 +9,23 @@ Neighbor matching and saves out data snippets with the analysis results.
 packages = c("RJSONIO","dplyr","FNN")
 
 package.check <- lapply(packages, FUN = function(x) {
+  suppressWarnings(suppressPackageStartupMessages(
   if (!require(x, character.only = TRUE)) {
     install.packages(x, dependencies = TRUE)
     library(x, character.only = TRUE)
-  }
+  }))
 })
 
 source("project_paths.r")
 
 
 predict_knn <- function(dataframe, testset, setup, k){
+  '
+  Run analysis with k-Nearest Neighbor matching on the given dataset
+  with parameters as defined in the setup, define bounds of the 
+  confidence intervals, predict outcomes for a testset and return
+  average mean squared error and coverage rate of the intervals.
+  '
   
   X <- dplyr::select(dataframe, starts_with('X_'))
   X_test <- dplyr::select(testset, starts_with('X_'))
@@ -33,23 +40,30 @@ predict_knn <- function(dataframe, testset, setup, k){
   predict_w0 <- knn.reg(X[W==0,], X_test, Y[W==0], k = k)$pred
   predict_w1 <- knn.reg(X[W==1,], X_test, Y[W==1], k = k)$pred 
   
+  # Estimate the Treatment effect and derive the MSE.
   estimated_te <- predict_w1 - predict_w0
   knn_mse <- mean((estimated_te - true_effect)^2)
   
+  # Derive the standard error.
   predict_w0_2 = knn.reg(X[W==0,], X_test, Y[W==0]^2, k = k)$pred
   predict_w1_2 = knn.reg(X[W==1,], X_test, Y[W==1]^2, k = k)$pred
-  
   predict_w0_var = (predict_w0_2 - predict_w0^2) / (k - 1)
   predict_w1_var = (predict_w1_2 - predict_w1^2) / (k - 1)
   std_err = sqrt(predict_w0_var + predict_w1_var)
   
-  covered_indicator = abs(estimated_te - true_effect) <= 1.96 * std_err
-  knn_covered = mean(covered_indicator)
+  alpha <- setup$alpha
+  qt <- qt(p = 1-alpha/2, df = n-d)
+  
+  # Derive coverage rate of confidence intervals. 
+  knn_cov = abs(estimated_te - true_effect) <= qt * std_err
+  knn_covered = mean(knn_cov)
   
   return(cbind(knn_covered, knn_mse))
 }
 
 run_and_write_knn <- function(setup_name, d, rep_number){
+  # Import the required data, execute the analysis, tie together the 
+  # data of interest and export to a single json file. 
   
   path_data <<-paste(PATH_OUT_DATA,"/", setup_name,"/sample_",setup_name,"_d=",d,"_rep_", rep_number, ".json", sep="")
   path_test_data <<- paste(PATH_OUT_DATA,"/", setup_name, "/sample_", setup_name, "_d=", d, "_rep_test.json", sep="")
@@ -62,6 +76,8 @@ run_and_write_knn <- function(setup_name, d, rep_number){
   
   sim_param <<- fromJSON(paste(PATH_IN_MODEL_SPECS,"/simulation_parameters.json", sep=""))
   
+  # Run extra analysis for each k value in sim_param$k_list
+  # and attach the results to the exported data frame.
   analysis = list()
   for (k in sim_param$k_list){
     analysis_k <- predict_knn(data, test_data, setup, k)

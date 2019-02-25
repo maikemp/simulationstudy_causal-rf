@@ -6,15 +6,15 @@ written by Wager & Athey and saves out data snippets with the analysis
 results.
 
 '
-
-
 packages = c("R.utils","pracma","Matrix","dplyr","RJSONIO","devtools","randomForestCI","causalForest", "mgcv", "Hmisc")
+# packages = c("randomForestCI","causalForest")
 
 package.check <- lapply(packages, FUN = function(x) {
+  suppressWarnings(suppressPackageStartupMessages(
   if (!require(x, character.only = TRUE)) {
     install.packages(x, dependencies = TRUE)
     library(x, character.only = TRUE)
-  }
+  }))
 })
 
 
@@ -23,7 +23,15 @@ source(paste(PATH_IN_MODEL_CODE,'/sample_size_functions.R',sep=""))
 source(paste(PATH_IN_MODEL_CODE,'/n_tree_functions.R',sep=""))
 
 
-predict_forest <- function(dataframe, testset, setup){
+predict_forest <- function(dataframe, testset, setup) {
+  '
+  Run analysis with causal random forests on the given dataset
+  with parameters as defined in the setup, define bounds of the 
+  confidence intervals, predict outcomes for a testset and return
+  average mean squared error and coverage rate of the intervals.
+  '
+  
+  # Put together data as required and name accordingly.
   X <- dplyr::select(dataframe, starts_with('X_'))
   X_test <- dplyr::select(testset, starts_with('X_'))
   Y <- dataframe$Y
@@ -38,35 +46,40 @@ predict_forest <- function(dataframe, testset, setup){
   sample_size_function <- get(setup$sample_size_function)
   sample_size <- sample_size_function(n)
   
-  if (setup$foresttype == 'double_sample'){
-    forest = causalForest(X, Y, W, n_tree, sample_size, setup$node_size)
+  # Build the forest either by the double sample or the propensity algorithm.
+  if (setup$foresttype == 'double_sample') {
+    forest = invisible(causalForest(X, Y, W, n_tree, sample_size, setup$node_size))
   }
-  if (setup$foresttype == 'propensity'){
-    propensityForest(X, Y, W, n_tree, sample_size, setup$node_size)
+  if (setup$foresttype == 'propensity') {
+    forest = invisible(propensityForest(X, Y, W, n_tree, sample_size, setup$node_size))
   }
   
-  predictions = predict(forest, X_test)
+  # Use the fitted model to predict treatment effects for the test sample. 
+  crf_tau = predict(forest, X_test)
+  # Obtain the infinitesimal jackknife for random forests for an estimate of the variance.
   forest_ci = randomForestInfJack(forest, X_test, calibrate = TRUE)
-  se_hat = sqrt(forest_ci$var.hat)
+  crf_se_hat = sqrt(forest_ci$var.hat)
+
+  # Obtain the limits of the confidence intervals for significance level alpha.
+  alpha <- setup$alpha
+  qt <- qt(p = 1-alpha/2, df = n-d)
+  up_lim = crf_tau + qt * crf_se_hat 
+  down_lim = crf_tau - qt * crf_se_hat
   
-  up_lim = predictions + 1.96 * se_hat
-  down_lim = predictions - 1.96 * se_hat
-  
-  crf_tau = forest_ci$y.hat
-  crf_se = sqrt(forest_ci$var.hat)
-  crf_cov = abs(crf_tau - true_effect) <= 1.96 * crf_se
+  # Compute share of test points covered by the corresponding confidence interval.
+  crf_cov = abs(crf_tau - true_effect) <= qt * crf_se_hat
   crf_covered = mean(crf_cov)
   crf_mse = mean((crf_tau - true_effect)^2)
+  
   return (cbind(n, d, crf_covered, crf_mse, n_tree, sample_size))
 }
 
-
-sR <- function(x, n=1){
+sR <- function(x, n=1) {
   substr(x, nchar(x)-n+1, nchar(x))
 }
 
-
-write_data <- function(setup, setup_name, analysis){
+write_data <- function(setup, setup_name, analysis) {
+  # Tie together all required data.
   
   # Determine the number of correlated variables.
   if (setup$x_distr == "normal"){
@@ -76,6 +89,7 @@ write_data <- function(setup, setup_name, analysis){
     n_corr = 0
   }
   
+  # Collect the data that should be part of the analysis data.
   x_distr = setup$x_distr
   sigma = setup$sigma
   prop_funct = sR(setup$propensity_function)
@@ -87,13 +101,14 @@ write_data <- function(setup, setup_name, analysis){
 
 
 run_and_write_forest <- function(setup_name, d, rep_number){
+  # Import the required data, execute the analysis, tie together the 
+  # data of interest and export to a single json file. 
   
   path_data <<-paste(PATH_OUT_DATA,"/", setup_name,"/sample_",setup_name,"_d=",d,"_rep_", rep_number, ".json", sep="")
   path_test_data <<- paste(PATH_OUT_DATA,"/", setup_name, "/sample_", setup_name, "_d=", d, "_rep_test.json", sep="")
   path_model_specs <<-paste(PATH_IN_MODEL_SPECS,"/", setup_name,".json", sep="")
   path_out <<- paste(PATH_OUT_ANALYSIS_CRF, '/crf_data_',setup_name,'_d=', d, '_rep_', rep_number,'.json', sep="")
-  #path_out <<- paste(PATH_OUT_ANALYSIS, '/analysis_data.json', sep="")
-  
+
   setup <- fromJSON(path_model_specs)
   data <- as.data.frame(do.call("cbind", fromJSON(path_data)))
   test_data <- as.data.frame(do.call("cbind", fromJSON(path_test_data)))
@@ -106,6 +121,7 @@ run_and_write_forest <- function(setup_name, d, rep_number){
   export_json <- toJSON(data)
   write(export_json, path_out)
 }
+
 
 args = commandArgs(trailingOnly = TRUE)
 setup_name = args[1]

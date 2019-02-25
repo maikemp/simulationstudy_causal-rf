@@ -9,15 +9,20 @@ estimate_*.R files and stacks them together into a csv dataframe.
 packages = c("RJSONIO","data.table")
 
 package.check <- lapply(packages, FUN = function(x) {
+  suppressWarnings(suppressPackageStartupMessages(
   if (!require(x, character.only = TRUE)) {
     install.packages(x, dependencies = TRUE)
     library(x, character.only = TRUE)
-  }
+  }))
 })
 
 source("project_paths.r")
 
 create_dataset <- function() {
+  '
+  Load all created data snippets and stack them in a dataframe containing
+  aggregate information about the simulation results. 
+  '
   sim_param <<- fromJSON(paste(PATH_IN_MODEL_SPECS,"/simulation_parameters.json", sep=""))
   
   n_dt <- length(sim_param$d_list)*length(sim_param$list_of_setups)*length(seq(sim_param$rep_number))

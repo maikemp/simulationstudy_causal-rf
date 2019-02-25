@@ -9,10 +9,11 @@ over simulation runs and makes a latex table out of the results.
 packages = c("xtable", "RJSONIO")
 
 package.check <- lapply(packages, FUN = function(x) {
+  suppressWarnings(suppressPackageStartupMessages(
   if (!require(x, character.only = TRUE)) {
     install.packages(x, dependencies = TRUE)
     library(x, character.only = TRUE)
-  }
+  }))
 })
 source("project_paths.r")
 
@@ -27,8 +28,7 @@ create_output_table <- function(setup_name){
   data_table = data.frame(d = as.integer(sim_param$d_list))
   
   for (method in sim_param$list_of_methods){
-    if (method == "knn"){
-      
+    if (method == "knn") {
       for(k in sim_param$k_list){
         
         knn_values = data.frame()
