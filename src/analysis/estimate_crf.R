@@ -17,6 +17,7 @@ package.check <- lapply(packages, FUN = function(x) {
   }))
 })
 
+path <<- '/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/bld/project_paths.r'
 
 source("project_paths.r")
 source(paste(PATH_IN_MODEL_CODE,'/sample_size_functions.R',sep=""))
@@ -104,16 +105,21 @@ run_and_write_forest <- function(setup_name, d, rep_number){
   # Import the required data, execute the analysis, tie together the 
   # data of interest and export to a single json file. 
   
-  path_data <<-paste(PATH_OUT_DATA,"/", setup_name,"/sample_",setup_name,"_d=",d,"_rep_", rep_number, ".json", sep="")
-  path_test_data <<- paste(PATH_OUT_DATA,"/", setup_name, "/sample_", setup_name, "_d=", d, "_rep_test.json", sep="")
-  path_model_specs <<-paste(PATH_IN_MODEL_SPECS,"/", setup_name,".json", sep="")
-  path_out <<- paste(PATH_OUT_ANALYSIS_CRF, '/crf_data_',setup_name,'_d=', d, '_rep_', rep_number,'.json', sep="")
-
+  path_data <<-paste0(PATH_OUT_DATA,"/", setup_name,"/sample_",setup_name,"_d=",d,"_rep_", rep_number, ".json")
+  path_test_data <<- paste0(PATH_OUT_DATA,"/", setup_name, "/sample_", setup_name, "_d=", d, "_rep_test.json")
+  path_model_specs <<-paste0(PATH_IN_MODEL_SPECS,"/", setup_name,".json")
+  path_out <<- paste0(PATH_OUT_ANALYSIS_CRF, '/crf_data_',setup_name,'_d=', d, '_rep_', rep_number,'.json')
+  path_trash <<- paste0(PATH_OUT_ANALYSIS_CRF, '/trash.txt')
+  
   setup <- fromJSON(path_model_specs)
   data <- as.data.frame(do.call("cbind", fromJSON(path_data)))
   test_data <- as.data.frame(do.call("cbind", fromJSON(path_test_data)))
   
-  analysis <- predict_forest(data, test_data, setup)
+  # Make a sink for the print messages from the forest estimation to keep terminal clean.
+  sink(file=paste0(path_trash))
+  analysis <- invisible(predict_forest(data, test_data, setup))
+  sink()
+  
   data <- write_data(setup, setup_name, analysis)
   data$id <- paste(setup_name, '_d=', d, '_rep_', rep_number,sep="")
   data$setup <- setup_name
@@ -129,4 +135,3 @@ d = args[2]
 rep_number = args[3]
 
 run_and_write_forest(setup_name, d, rep_number)
-

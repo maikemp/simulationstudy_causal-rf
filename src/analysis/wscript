@@ -1,4 +1,5 @@
 #! python
+# Analysis
 import json
 
 sim_param = json.load(open('src/model_specs/simulation_parameters.json'), encoding='utf-8')
