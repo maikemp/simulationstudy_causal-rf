@@ -14,11 +14,8 @@ import sys
 import json
 import numpy as np
 import pandas as pd
+import importlib
 from bld.project_paths import project_paths_join as ppj
-
-import src.model_code.main_effect_functions as mef
-import src.model_code.treatment_effect_functions as tef
-import src.model_code.propensity_functions as pf
 
 
 def _get_covariance_matrix(d, n_corr):
@@ -94,6 +91,10 @@ if __name__ == "__main__":
             ppj("IN_MODEL_SPECS", "simulation_parameters.json"),
             encoding="utf-8")
     )
+    
+    mef = importlib.import_module('src.model_code.' + setup['main_effect_function'])
+    tef = importlib.import_module('src.model_code.' + setup['treatment_effect_function'])
+    pf = importlib.import_module('src.model_code.' + setup['propensity_function'])
 
     data = get_simulated_sample(setup, int(d))
 

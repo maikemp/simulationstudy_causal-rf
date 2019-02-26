@@ -11,20 +11,36 @@ import pandas as pd
 import numpy as np
 import json
 import os
+import importlib
+
 
 
 path = r'/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/src/model_specs/simulation_parameters.json'
 path_1 = r'/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/src/model_specs/setup_1.json'
 setup = json.load(open(path_1), encoding='utf-8')
 
+path_2 = r'/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/bld/project_paths.py'
+import path_2
+
+bla = importlib.find_loader('name',path_2)
+__import__()
+
+test = __import__('path_2', fromlist=[None])
+
+IN_MODEL_CODE
+
 # cd /Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/bld/
 (path + '/bld')
+
 
 
 repetitions = [str(par) for par in range(sim_param['rep_number'])]
 n_list = [str(par) for par in sim_param['n_list']]
 n_test = str(sim_param["n_test_points"])
-ctxs = 'test'
+ctxs = 5
+
+str(ctxs).isnumeric()
+
 
 deps = [
     print(ctxs, 'IN_MODEL_CODE', 'sample_size_functions.R'),

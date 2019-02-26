@@ -18,6 +18,11 @@ def build(ctx):
     )
     
     for setup in sim_param["list_of_setups"]:
+        dgp = json.load(open('src/model_specs/{}_dgp.json'.format(setup)), encoding='utf-8')
+        main_effect_function = dgp['main_effect_function']
+        treatment_effect_function = dgp['treatment_effect_function']
+        propensity_function = dgp['propensity_function']
+
 
         for d in d_list:   
         
@@ -30,9 +35,9 @@ def build(ctx):
                     source='get_simulated_samples.py',
                     deps=[
                         ctx.path_to(ctx,'IN_MODEL_SPECS', '{}_dgp.json'.format(setup)),
-                        ctx.path_to(ctx,'IN_MODEL_CODE', 'main_effect_functions.py'),
-                        ctx.path_to(ctx,'IN_MODEL_CODE', 'treatment_effect_functions.py'),
-                        ctx.path_to(ctx,'IN_MODEL_CODE', 'propensity_functions.py')
+                        ctx.path_to(ctx,'IN_MODEL_CODE', main_effect_function +'.py'),
+                        ctx.path_to(ctx,'IN_MODEL_CODE', treatment_effect_function + '.py'),
+                        ctx.path_to(ctx,'IN_MODEL_CODE', propensity_function + '.py')
                     ],
                     target=[
                         ctx.path_to(ctx, 'OUT_DATA_' + setup.upper(), 'sample_{}_d={}_rep_{}.json'.format(setup, d, rep_number))
