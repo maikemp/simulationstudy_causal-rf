@@ -8,7 +8,7 @@
 \usepackage{fancyvrb, moreverb, relsize}
 \usepackage{eurosym, calc}
 % \usepackage{chngcntr}
-\usepackage{amsmath, amssymb, amsfonts, amsthm, bm}
+\usepackage{amsmath, amssymb, amsfonts, amsthm, bm, MnSymbol}
 \usepackage{caption}
 \usepackage{mdwlist}
 \usepackage{xfrac}
@@ -16,7 +16,7 @@
 \usepackage{xcolor}
 \usepackage{subcaption}
 \usepackage{minibox}
-% \usepackage{pdf14} % Enable for Manuscriptcentral -- can't handle pdf 1.5
+% \usepackage{pdf14} % Enable for Manuscriptcentral -- can't handle pdf 1.5,
 % \usepackage{endfloat} % Enable to move tables / figures to the end. Useful for some submissions.
 
 
@@ -32,7 +32,7 @@
     colorlinks=true,
     linkcolor=black,
     anchorcolor=black,
-    citecolor=black,
+    citecolor=black,,
     filecolor=black,
     menucolor=black,
     runcolor=black,
@@ -81,6 +81,24 @@ If you are using this template, please cite this item from the references: \cite
 
 \section{Background} % (fold)
 \label{sec:background}
+The method described in \citet{wa18} is an attempt to estimate heterogeneous treatment effects in a highly data-driven way while still enabling valid statistical inference. This makes it possible to discover even unexpected structures in the data.
+
+For this purpose, the authors assume having at hand \(n\) i.i.d. draws of a feature vector \(X_i \in [0,1]^d\) or following any other density bounded away from 0 and infinity, a treatment indicator \(W_i \in \{0,1\}\), and an outcome \(Y_i \in \mathbb{R}\).
+The treatment effect is the expectation of the difference between the outcome under treatment and without treatment:
+\input{formulas/treatment_effect}
+where \(Y_i^{(1)}\) denotes the outcome if treatment has taken place and \(Y_i^{(0)}\) is the outcome without treatment.
+While heterogeneity in the treatment effect depending on the observable variables is allowed, unconfoundedness is assumed:
+\input{formulas/unconfoundedness}
+This means that 
+\(\) \(\) \(\) 
+
+
+\input{formulas/tree_estimator}
+
+
+
+
+ \(\) \(\) \(\) \(\) \(\) 
 
 
 \section{Simulation Study} % (fold)
@@ -88,6 +106,8 @@ If you are using this template, please cite this item from the references: \cite
 
 \subsection{Approach} % (fold)
 \label{sec:sim_approach}
+
+
 
 \subsection{Results} % (fold)
 \label{sec:sim_results}
@@ -100,8 +120,7 @@ If you are using this template, please cite this item from the references: \cite
 \label{sec:conclusion}
 
 
-The decision rule of an agent is the following:
-\input{formulas/decision_rule}
+
 
 \begin{figure}
     \caption{Segregation by cycle in the baseline \citet{Schelling69} model as in the \citet{StachurskiSargent13} example}
