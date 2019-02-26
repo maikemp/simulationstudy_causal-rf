@@ -2,7 +2,7 @@
 
 The file "estimate_crf.R" estimates treatment effects by causal forests 
 and confidence intervals for them using the causalForest functions 
-written by Wager & Athey and saves out data snippets with the analysis
+written by Wager & Athey (2018) and saves out data snippets with the analysis
 results.
 
 '
@@ -17,11 +17,15 @@ package.check <- lapply(packages, FUN = function(x) {
   }))
 })
 
-path <<- '/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/bld/project_paths.r'
+# path <<- '/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/bld/project_paths.r'
+# source(path)
+# setup_name = 'setup_1'
+# rep_number= 1
+# d = 5
+# dataframe = data
+# testset = test_data
 
 source("project_paths.r")
-source(paste(PATH_IN_MODEL_CODE,'/sample_size_functions.R',sep=""))
-source(paste(PATH_IN_MODEL_CODE,'/n_tree_functions.R',sep=""))
 
 
 predict_forest <- function(dataframe, testset, setup) {
@@ -41,11 +45,26 @@ predict_forest <- function(dataframe, testset, setup) {
   n <- length(Y)
   d <- ncol(X)
   
-  n_tree_function = get(setup$n_tree_function)
-  n_tree <- n_tree_function(n)
+  # Get number of trees as numeric value or from the respecitve function depending on the value in the setup.
+  if (is.numeric(setup$n_tree_function)) {
+    n_tree = setup$n_tree_function
+  } else {
+    source(paste0(PATH_IN_MODEL_CODE,'/n_tree_functions.R'))
+    n_tree_function = get(setup$n_tree_function)
+    n_tree <- n_tree_function(n)
+  }
   
-  sample_size_function <- get(setup$sample_size_function)
-  sample_size <- sample_size_function(n)
+  # Get sample size as numeric value or from the respecitve function depending on the value in the setup.
+  if(is.numeric(setup$sample_size_function)) {
+    sample_size = setup$sample_size_function
+  } else {
+    source(paste0(PATH_IN_MODEL_CODE, '/sample_size_functions.R'))
+    sample_size_function <- get(setup$sample_size_function)
+    sample_size <- sample_size_function(n)
+    
+  }
+  
+
   
   # Build the forest either by the double sample or the propensity algorithm.
   if (setup$foresttype == 'double_sample') {

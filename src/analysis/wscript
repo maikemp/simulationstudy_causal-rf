@@ -24,10 +24,14 @@ def build(ctx):
 
                         # Define dependencies that are specific to one method.
                         if method == 'crf':
-                            deplist.extend([
-                                ctx.path_to(ctx, 'IN_MODEL_CODE', 'sample_size_functions.R'),
-                                ctx.path_to(ctx, 'IN_MODEL_CODE', 'n_tree_functions.R')
-                            ])
+                            setup = json.load(open('src/model_specs/{}.json'.format(setup_name)))
+
+                            if str(setup['sample_size_function']).isnumeric() == False:
+                                deplist.extend([ctx.path_to(ctx, 'IN_MODEL_CODE', 'sample_size_functions.R')])
+
+                            if str(setup['n_tree_function']).isnumeric() == False:
+                                deplist.extend([ctx.path_to(ctx, 'IN_MODEL_CODE', 'n_tree_functions.R')])
+
                         if method == 'knn':
                             deplist.extend([
                                 ctx.path_to(ctx, 'IN_MODEL_SPECS', 'k_list.json')
@@ -68,6 +72,7 @@ def build(ctx):
             append=model,
             name='schelling_{}'.format(model)
         )
+
 
     dep_list = [
         '../../project_paths.r',
