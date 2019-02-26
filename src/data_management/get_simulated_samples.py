@@ -88,7 +88,7 @@ if __name__ == "__main__":
     rep_number = sys.argv[3]
 
     setup = json.load(
-        open(ppj("IN_MODEL_SPECS", setup_name + ".json"), encoding="utf-8"))
+        open(ppj("IN_MODEL_SPECS", setup_name + "_dgp.json"), encoding="utf-8"))
     sim_param = json.load(
         open(
             ppj("IN_MODEL_SPECS", "simulation_parameters.json"),

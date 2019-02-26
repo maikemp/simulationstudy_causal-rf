@@ -81,7 +81,7 @@ If you are using this template, please cite this item from the references: \cite
 
 \section{Background} % (fold)
 \label{sec:background}
-The method described in \citet{wa18} is an attempt to estimate heterogeneous treatment effects in a highly data-driven way while still enabling valid statistical inference. This makes it possible to discover even unexpected structures in the data.
+The method described in \citet{wa18} is an attempt to estimate heterogeneous treatment effects in a highly data-driven way while still enabling valid statistical inference. This makes it possible to discover even unexpected structures in the data. In the following I will give a short description of this method following \citet{wa18} unless stated otherwise.
 
 For this purpose, the authors assume having at hand \(n\) i.i.d. draws of a feature vector \(X_i \in [0,1]^d\) or following any other density bounded away from 0 and infinity, a treatment indicator \(W_i \in \{0,1\}\), and an outcome \(Y_i \in \mathbb{R}\).
 The treatment effect is the expectation of the difference between the outcome under treatment and without treatment:
@@ -89,7 +89,7 @@ The treatment effect is the expectation of the difference between the outcome un
 where \(Y_i^{(1)}\) denotes the outcome if treatment has taken place and \(Y_i^{(0)}\) is the outcome without treatment.
 While heterogeneity in the treatment effect depending on the observable variables is allowed, unconfoundedness is assumed:
 \input{formulas/unconfoundedness}
-This means that 
+This means that the selection bias into treatment disappears when controlling for observable features, and thus around observations that are "close" in the feature space behave like a randomized experiment. Nearest neighbor methods exploit this assumption
 \(\) \(\) \(\) 
 
 

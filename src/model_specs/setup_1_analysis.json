@@ -1,0 +1,7 @@
+{
+    "node_size": 1,
+    "n_tree_function": 100,
+    "sample_size_function": 25,
+    "foresttype": "double_sample",
+    "alpha": 0.05
+}

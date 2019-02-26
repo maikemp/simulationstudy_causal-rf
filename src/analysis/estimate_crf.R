@@ -101,22 +101,10 @@ sR <- function(x, n=1) {
 write_data <- function(setup, setup_name, analysis) {
   # Tie together all required data.
   
-  # Determine the number of correlated variables.
-  if (setup$x_distr == "normal"){
-    n_corr = setup$x_ncorr
-  }
-  if (setup$x_distr == "uniform"){
-    n_corr = 0
-  }
-  
   # Collect the data that should be part of the analysis data.
-  x_distr = setup$x_distr
-  sigma = setup$sigma
-  prop_funct = sR(setup$propensity_function)
-  te_funct = sR(setup$treatment_effect_function)
   foresttype = setup$foresttype
   
-  return(data.frame(analysis,  n_corr, x_distr, sigma, prop_funct, te_funct, foresttype))
+  return(data.frame(setup_name, analysis, foresttype))
 }
 
 
@@ -126,7 +114,7 @@ run_and_write_forest <- function(setup_name, d, rep_number){
   
   path_data <<-paste0(PATH_OUT_DATA,"/", setup_name,"/sample_",setup_name,"_d=",d,"_rep_", rep_number, ".json")
   path_test_data <<- paste0(PATH_OUT_DATA,"/", setup_name, "/sample_", setup_name, "_d=", d, "_rep_test.json")
-  path_model_specs <<-paste0(PATH_IN_MODEL_SPECS,"/", setup_name,".json")
+  path_model_specs <<-paste0(PATH_IN_MODEL_SPECS,"/", setup_name,"_analysis.json")
   path_out <<- paste0(PATH_OUT_ANALYSIS_CRF, '/crf_data_',setup_name,'_d=', d, '_rep_', rep_number,'.json')
   path_trash <<- paste0(PATH_OUT_ANALYSIS_CRF, '/trash.txt')
   
@@ -141,7 +129,6 @@ run_and_write_forest <- function(setup_name, d, rep_number){
   
   data <- write_data(setup, setup_name, analysis)
   data$id <- paste(setup_name, '_d=', d, '_rep_', rep_number,sep="")
-  data$setup <- setup_name
 
   export_json <- toJSON(data)
   write(export_json, path_out)

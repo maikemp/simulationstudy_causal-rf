@@ -15,7 +15,7 @@ def build(ctx):
 
                         deplist = [
                             '../../project_paths.r',
-                            ctx.path_to(ctx, 'IN_MODEL_SPECS', '{}.json'.format(setup_name)),
+                            ctx.path_to(ctx, 'IN_MODEL_SPECS', '{}_analysis.json'.format(setup_name)),
                             ctx.path_to(ctx, 'OUT_DATA_' + setup_name.upper(), 'sample_{}_d={}_rep_test.json'.format(setup_name, d)),
                             ctx.path_to(
                                 ctx, 'OUT_DATA_' + setup_name.upper(), 'sample_{}_d={}_rep_{}.json'.format(setup_name, d, rep_number)
@@ -24,7 +24,7 @@ def build(ctx):
 
                         # Define dependencies that are specific to one method.
                         if method == 'crf':
-                            setup = json.load(open('src/model_specs/{}.json'.format(setup_name)))
+                            setup = json.load(open('src/model_specs/{}_analysis.json'.format(setup_name)))
 
                             if str(setup['sample_size_function']).isnumeric() == False:
                                 deplist.extend([ctx.path_to(ctx, 'IN_MODEL_CODE', 'sample_size_functions.R')])

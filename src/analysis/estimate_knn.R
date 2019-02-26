@@ -67,7 +67,7 @@ run_and_write_knn <- function(setup_name, d, rep_number){
   
   path_data <<-paste(PATH_OUT_DATA,"/", setup_name,"/sample_",setup_name,"_d=",d,"_rep_", rep_number, ".json", sep="")
   path_test_data <<- paste(PATH_OUT_DATA,"/", setup_name, "/sample_", setup_name, "_d=", d, "_rep_test.json", sep="")
-  path_model_specs <<-paste(PATH_IN_MODEL_SPECS,"/", setup_name,".json", sep="")
+  path_model_specs <<-paste(PATH_IN_MODEL_SPECS,"/", setup_name,"_analysis.json", sep="")
   path_out <<- paste(PATH_OUT_ANALYSIS_KNN, '/knn_data_',setup_name,'_d=', d, '_rep_', rep_number,'.json', sep="")
   
   setup <- fromJSON(path_model_specs)

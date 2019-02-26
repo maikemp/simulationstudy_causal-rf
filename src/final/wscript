@@ -6,7 +6,7 @@ list_of_setups = sim_param["list_of_setups"]
 
 def build(ctx):
 
-    for setup in list_of_setups:
+    for setup_name in list_of_setups:
         ctx(
             features='run_r_script',
             source='coverage_tables.R',
@@ -15,9 +15,9 @@ def build(ctx):
                 ctx.path_to(ctx, 'IN_MODEL_SPECS', 'simulation_parameters.json'),
                 ctx.path_to(ctx, 'IN_MODEL_SPECS', 'k_list.json'),
             ],
-            target=ctx.path_to(ctx, 'OUT_TABLES', 'coverage_table_{}.tex'.format(setup)),
-            append=setup,
-            name='make_coverage_table_{}'.format(setup)
+            target=ctx.path_to(ctx, 'OUT_TABLES', 'coverage_table_{}.tex'.format(setup_name)),
+            append=setup_name,
+            name='make_coverage_table_{}'.format(setup_name)
         )
 
 

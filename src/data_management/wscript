@@ -29,7 +29,7 @@ def build(ctx):
                     features='run_py_script',
                     source='get_simulated_samples.py',
                     deps=[
-                        ctx.path_to(ctx,'IN_MODEL_SPECS', '{}.json'.format(setup)),
+                        ctx.path_to(ctx,'IN_MODEL_SPECS', '{}_dgp.json'.format(setup)),
                         ctx.path_to(ctx,'IN_MODEL_CODE', 'main_effect_functions.py'),
                         ctx.path_to(ctx,'IN_MODEL_CODE', 'treatment_effect_functions.py'),
                         ctx.path_to(ctx,'IN_MODEL_CODE', 'propensity_functions.py')

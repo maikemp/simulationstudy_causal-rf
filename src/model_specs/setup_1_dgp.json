@@ -1,0 +1,9 @@
+{
+    "n": 100,
+    "x_distr": "normal",
+    "x_ncorr": "d",
+    "sigma": 1,
+    "propensity_function": "propensity_function_1",
+    "treatment_effect_function": "treatment_effect_function_1",
+    "main_effect_function": "main_effect_function_1"
+}
