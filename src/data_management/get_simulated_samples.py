@@ -64,9 +64,12 @@ def get_simulated_sample(setup, d):
 
     base_function = getattr(bef, setup['base_effect_function'])
     epsilon = np.random.normal(0, setup['sigma'], setup['n'])
-    Y = np.apply_along_axis(base_function, 1, X) + W * \
-        true_treat_effect + epsilon
-
+    
+    Y_0=np.zeros(len(X))
+    for i in range(len(X)):
+        Y_0[i] = base_function(X[i], true_treat_effect[i])
+        
+    Y = Y_0 + W * true_treat_effect + epsilon
     stack = np.column_stack((X, W, Y, true_treat_effect))
     
     # Name the columns so they can be identified easily.

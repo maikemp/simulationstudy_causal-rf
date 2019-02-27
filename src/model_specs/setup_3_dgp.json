@@ -4,8 +4,8 @@
     "x_ncorr": 0,
     "x_low": -1,
     "x_high": 1,
-    "sigma": 3,
-    "propensity_function": "propensity_function_1",
-    "treatment_effect_function": "treatment_effect_function_1",
-    "base_effect_function": "base_effect_function_1"
+    "sigma": 1,
+    "propensity_function": "propensity_function_2",
+    "treatment_effect_function": "treatment_effect_function_3",
+    "base_effect_function": "base_effect_function_2"
 }
