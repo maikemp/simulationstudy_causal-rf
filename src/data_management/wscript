@@ -18,8 +18,10 @@ def build(ctx):
     )
     
     for setup in sim_param["list_of_setups"]:
+
+        # Define function names for dependency according to information in the individual setups.‚
         dgp = json.load(open('src/model_specs/{}_dgp.json'.format(setup)), encoding='utf-8')
-        main_effect_function = dgp['main_effect_function']
+        base_effect_function = dgp['base_effect_function']
         treatment_effect_function = dgp['treatment_effect_function']
         propensity_function = dgp['propensity_function']
 
@@ -35,7 +37,7 @@ def build(ctx):
                     source='get_simulated_samples.py',
                     deps=[
                         ctx.path_to(ctx,'IN_MODEL_SPECS', '{}_dgp.json'.format(setup)),
-                        ctx.path_to(ctx,'IN_MODEL_CODE', main_effect_function +'.py'),
+                        ctx.path_to(ctx,'IN_MODEL_CODE', base_effect_function +'.py'),
                         ctx.path_to(ctx,'IN_MODEL_CODE', treatment_effect_function + '.py'),
                         ctx.path_to(ctx,'IN_MODEL_CODE', propensity_function + '.py')
                     ],

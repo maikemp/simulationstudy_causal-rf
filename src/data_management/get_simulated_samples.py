@@ -4,7 +4,7 @@ IN_MODEL_SPECS and store in a numpy array.
 Module requires to be given a setup corresponding to a json file, the number of 
 independent variables as well as a repetition number indicating the repetition 
 currently at for the simulation. Furthermore, it loads the required functions 
-for the main effect, the treatment effect and the propensity score from the 
+for the base effect, the treatment effect and the propensity score from the 
 repective modules in IN_MODEL_CODE.
 
 """
@@ -62,9 +62,9 @@ def get_simulated_sample(setup, d):
     treat_function = getattr(tef, setup['treatment_effect_function'])
     true_treat_effect = np.apply_along_axis(treat_function, 1, X)
 
-    main_function = getattr(mef, setup['main_effect_function'])
+    base_function = getattr(bef, setup['base_effect_function'])
     epsilon = np.random.normal(0, setup['sigma'], setup['n'])
-    Y = np.apply_along_axis(main_function, 1, X) + W * \
+    Y = np.apply_along_axis(base_function, 1, X) + W * \
         true_treat_effect + epsilon
 
     stack = np.column_stack((X, W, Y, true_treat_effect))
@@ -92,7 +92,7 @@ if __name__ == "__main__":
             encoding="utf-8")
     )
     
-    mef = importlib.import_module('src.model_code.' + setup['main_effect_function'])
+    bef = importlib.import_module('src.model_code.' + setup['base_effect_function'])
     tef = importlib.import_module('src.model_code.' + setup['treatment_effect_function'])
     pf = importlib.import_module('src.model_code.' + setup['propensity_function'])
 

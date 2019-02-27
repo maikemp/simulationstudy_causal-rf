@@ -7,5 +7,5 @@
     "sigma": 1,
     "propensity_function": "propensity_function_1",
     "treatment_effect_function": "treatment_effect_function_2",
-    "main_effect_function": "main_effect_function_1"
+    "base_effect_function": "base_effect_function_1"
 }
