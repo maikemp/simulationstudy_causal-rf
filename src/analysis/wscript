@@ -22,6 +22,12 @@ def build(ctx):
                                 )
                         ]
 
+                        targetlist =[
+                            ctx.path_to(
+                                ctx, 'OUT_ANALYSIS_'+method.upper(), method+'_data_{}_d={}_rep_{}.json'.format(setup_name,d,rep_number)
+                            )
+                        ]
+
                         # Define dependencies that are specific to one method.
                         if method == 'crf':
                             setup = json.load(open('src/model_specs/{}_analysis.json'.format(setup_name)))
@@ -31,6 +37,12 @@ def build(ctx):
 
                             if str(setup['n_tree_function']).isnumeric() == False:
                                 deplist.extend([ctx.path_to(ctx, 'IN_MODEL_CODE', 'n_tree_functions.R')])
+
+                            # Only for first repetition number, add saved micro_data to the target.
+                            if rep_number == '0':
+                                targetlist.extend([
+                                    ctx.path_to(ctx, 'OUT_ANALYSIS_CRF', 'crf_data_{}_d={}_micro_data.json'.format(setup_name,d))
+                                ])
 
                         if method == 'knn':
                             deplist.extend([
@@ -43,11 +55,7 @@ def build(ctx):
                             source='estimate_' + method + '.R',
         
                             deps=deplist,
-                            target=[
-                                ctx.path_to(
-                                    ctx, 'OUT_ANALYSIS_'+method.upper(), method+'_data_{}_d={}_rep_{}.json'.format(setup_name,d,rep_number)
-                                )
-                            ],
+                            target= targetlist,
                             append=[setup_name, d, rep_number],
                             name='get_{}_data_{}_{}_{}'.format(method, setup_name, d, rep_number)
                             )

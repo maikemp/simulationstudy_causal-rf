@@ -17,13 +17,13 @@ package.check <- lapply(packages, FUN = function(x) {
   }))
 })
 
-path <<- '/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/bld/project_paths.r'
-source(path)
-setup_name = 'setup_1'
-rep_number= 0
-d = 5
-dataframe = data
-testset = test_data
+# path <<- '/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/bld/project_paths.r'
+# source(path)
+# setup_name = 'setup_1'
+# rep_number= 0
+# d = 5
+# dataframe = data
+# testset = test_data
 
 source("project_paths.r")
 
@@ -125,7 +125,7 @@ run_and_write_forest <- function(setup_name, d, rep_number){
   
   # Create micro data only for the first repetition of any setup.
   if (rep_number == 0){
-    path_out_micro <- paste0(PATH_OUT_ANALYSIS_CRF,'/crf_data_',setup_name,'_micro_data.json')
+    path_out_micro <- paste0(PATH_OUT_ANALYSIS_CRF,'/crf_data_',setup_name,'_d=',d,'_micro_data.json')
     micro_data <- analysis$micro_data
     export_json <- toJSON(micro_data)
     write(export_json, path_out_micro)
