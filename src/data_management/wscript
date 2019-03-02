@@ -9,17 +9,9 @@ d_list = [str(par) for par in sim_param['d_list']]
 
 def build(ctx):
 
-    # Illustrate simple use of run_py_script
-    ctx(
-        features='run_py_script',
-        source='get_simulation_draws.py',
-        target=ctx.path_to(ctx, 'OUT_DATA', 'initial_locations.csv'),
-        name='get_simulation_draws'
-    )
-    
     for setup in sim_param["list_of_setups"]:
 
-        # Define function names for dependency according to information in the individual setups.‚
+        # Define function names for dependency according to information in the individual setups.
         dgp = json.load(open('src/model_specs/{}_dgp.json'.format(setup)), encoding='utf-8')
         base_effect_function = dgp['base_effect_function']
         treatment_effect_function = dgp['treatment_effect_function']
