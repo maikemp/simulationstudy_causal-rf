@@ -25,6 +25,7 @@ def plot_tau_ci(micro_data, setup_name, d):
         fmt="o", c='r', label = "Estimated TE: CI missing true TE"
         )
     plt.legend()
+    plt.title('Estimated and True TE for'+setup_name.replace('_',' ')+ 'with d = {}'.format(d))
     plt.savefig(ppj("OUT_FIGURES", "micro_plot_{}_d={}.png".format(setup_name, d)), bbox_inches='tight')
     
     
