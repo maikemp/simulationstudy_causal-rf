@@ -1,0 +1,11 @@
+{
+    "n": 100,
+    "x_distr": "uniform",
+    "x_ncorr": 0,
+    "x_low": -1,
+    "x_high": 1,
+    "sigma": 1,
+    "propensity_function": "propensity_function_2",
+    "treatment_effect_function": "treatment_effect_function_4",
+    "base_effect_function": "base_effect_function_2"
+}

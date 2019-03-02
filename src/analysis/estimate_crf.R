@@ -17,13 +17,13 @@ package.check <- lapply(packages, FUN = function(x) {
   }))
 })
 
-# path <<- '/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/bld/project_paths.r'
-# source(path)
-# setup_name = 'setup_1'
-# rep_number= 1
-# d = 5
-# dataframe = data
-# testset = test_data
+path <<- '/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/bld/project_paths.r'
+source(path)
+setup_name = 'setup_1'
+rep_number= 0
+d = 5
+dataframe = data
+testset = test_data
 
 source("project_paths.r")
 
@@ -64,8 +64,6 @@ predict_forest <- function(dataframe, testset, setup) {
     
   }
   
-
-  
   # Build the forest either by the double sample or the propensity algorithm.
   if (setup$foresttype == 'double_sample') {
     forest = invisible(causalForest(X, Y, W, n_tree, sample_size, setup$node_size))
@@ -91,22 +89,10 @@ predict_forest <- function(dataframe, testset, setup) {
   crf_covered = mean(crf_cov)
   crf_mse = mean((crf_tau - true_effect)^2)
   
-  return (cbind(n, d, crf_covered, crf_mse, n_tree, sample_size))
-}
-
-sR <- function(x, n=1) {
-  substr(x, nchar(x)-n+1, nchar(x))
-}
-
-write_data <- function(setup, setup_name, analysis) {
-  # Tie together all required data.
+  micro_data = cbind(X[1], true_effect, crf_tau, up_lim, down_lim)
   
-  # Collect the data that should be part of the analysis data.
-  foresttype = setup$foresttype
-  
-  return(data.frame(setup_name, analysis, foresttype))
+  return (list("results" = cbind(n, d, crf_covered, crf_mse, n_tree, sample_size), "micro_data" = micro_data))
 }
-
 
 run_and_write_forest <- function(setup_name, d, rep_number){
   # Import the required data, execute the analysis, tie together the 
@@ -117,21 +103,33 @@ run_and_write_forest <- function(setup_name, d, rep_number){
   path_model_specs <<-paste0(PATH_IN_MODEL_SPECS,"/", setup_name,"_analysis.json")
   path_out <<- paste0(PATH_OUT_ANALYSIS_CRF, '/crf_data_',setup_name,'_d=', d, '_rep_', rep_number,'.json')
   path_trash <<- paste0(PATH_OUT_ANALYSIS_CRF, '/trash.txt')
-  
+
   setup <- fromJSON(path_model_specs)
   data <- as.data.frame(do.call("cbind", fromJSON(path_data)))
   test_data <- as.data.frame(do.call("cbind", fromJSON(path_test_data)))
   
   # Make a sink for the print messages from the forest estimation to keep terminal clean.
   sink(file=paste0(path_trash))
+  
+  # Run analysis and extract aggregated data and micro data.
   analysis <- invisible(predict_forest(data, test_data, setup))
+  results <- analysis$results
   sink()
   
-  data <- write_data(setup, setup_name, analysis)
-  data$id <- paste(setup_name, '_d=', d, '_rep_', rep_number,sep="")
-
+  # Create result data frame and save out to json file.
+  foresttype <- setup$foresttype
+  id <- paste(setup_name, '_d=', d, '_rep_', rep_number,sep="")
+  data <- data.frame(id, setup_name, results, foresttype)
   export_json <- toJSON(data)
   write(export_json, path_out)
+  
+  # Create micro data only for the first repetition of any setup.
+  if (rep_number == 0){
+    path_out_micro <- paste0(PATH_OUT_ANALYSIS_CRF,'/crf_data_',setup_name,'_micro_data.json')
+    micro_data <- analysis$micro_data
+    export_json <- toJSON(micro_data)
+    write(export_json, path_out_micro)
+  }
 }
 
 
