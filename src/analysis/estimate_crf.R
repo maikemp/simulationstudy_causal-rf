@@ -17,14 +17,6 @@ package.check <- lapply(packages, FUN = function(x) {
   }))
 })
 
-# path <<- '/Users/maike-mp/UniBonn/5.Semester/MasterThesis/simulationstudy_ci_causal_rf/bld/project_paths.r'
-# source(path)
-# setup_name = 'setup_1'
-# rep_number= 0
-# d = 5
-# dataframe = data
-# testset = test_data
-
 source("project_paths.r")
 
 
@@ -81,15 +73,14 @@ predict_forest <- function(dataframe, testset, setup) {
   # Obtain the limits of the confidence intervals for significance level alpha.
   alpha <- setup$alpha
   qt <- qt(p = 1-alpha/2, df = n-d)
-  up_lim = crf_tau + qt * crf_se_hat 
-  down_lim = crf_tau - qt * crf_se_hat
-  
+  half_ci_width = qt * crf_se_hat 
+
   # Compute share of test points covered by the corresponding confidence interval.
   crf_cov = abs(crf_tau - true_effect) <= qt * crf_se_hat
   crf_covered = mean(crf_cov)
   crf_mse = mean((crf_tau - true_effect)^2)
   
-  micro_data = cbind(X[1], true_effect, crf_tau, up_lim, down_lim)
+  micro_data = cbind(X_test[1], true_effect, crf_tau, crf_cov, half_ci_width)
   
   return (list("results" = cbind(n, d, crf_covered, crf_mse, n_tree, sample_size), "micro_data" = micro_data))
 }
