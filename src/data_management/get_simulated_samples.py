@@ -1,11 +1,11 @@
 """Draw simulated dataset using model specifications specified in
 IN_MODEL_SPECS and store in a numpy array.
 
-Module requires to be given a setup corresponding to a json file, the number of 
-independent variables as well as a repetition number indicating the repetition 
-currently at for the simulation. Furthermore, it loads the required functions 
-for the base effect, the treatment effect and the propensity score from the 
-repective modules in IN_MODEL_CODE.
+Module requires to be given a setup corresponding to a json file, the number  
+of independent variables as well as a repetition number indicating the 
+repetition currently at for the simulation. Furthermore, it loads the required 
+functions for the base effect, the treatment effect and the propensity score 
+from the repective modules in IN_MODEL_CODE.
 
 """
 
@@ -24,7 +24,7 @@ def _get_covariance_matrix(d, n_corr):
     are uncorrelated to all other variables.
 
     """
-    
+
     if n_corr > d:
         raise ValueError(
             'Nr of corr. variables must not be larger than nr of variables'
@@ -64,14 +64,14 @@ def get_simulated_sample(setup, d):
 
     base_function = getattr(bef, setup['base_effect_function'])
     epsilon = np.random.normal(0, setup['sigma'], setup['n'])
-    
-    Y_0=np.zeros(len(X))
+
+    Y_0 = np.zeros(len(X))
     for i in range(len(X)):
         Y_0[i] = base_function(X[i], true_treat_effect[i])
-        
+
     Y = Y_0 + W * true_treat_effect + epsilon
     stack = np.column_stack((X, W, Y, true_treat_effect))
-    
+
     # Name the columns so they can be identified easily.
     columns = list()
     for i in range(d):
@@ -87,27 +87,36 @@ if __name__ == "__main__":
     d = sys.argv[2]
     rep_number = sys.argv[3]
     setup = json.load(
-        open(ppj("IN_MODEL_SPECS", setup_name + "_dgp.json"), encoding="utf-8"))
+        open(
+            ppj("IN_MODEL_SPECS", setup_name + "_dgp.json"),
+            encoding="utf-8"
+        )
+    )
     sim_param = json.load(
         open(
             ppj("IN_MODEL_SPECS", "simulation_parameters.json"),
             encoding="utf-8")
     )
-    
+
     # Install the required functions that are defined as a string in the setup.
-    bef = importlib.import_module('src.model_code.' + setup['base_effect_function'])
-    tef = importlib.import_module('src.model_code.' + setup['treatment_effect_function'])
-    pf = importlib.import_module('src.model_code.' + setup['propensity_function'])
-    
+    bef = importlib.import_module(
+        'src.model_code.' + setup['base_effect_function']
+    )
+    tef = importlib.import_module(
+        'src.model_code.' + setup['treatment_effect_function'])
+    pf = importlib.import_module(
+        'src.model_code.' + setup['propensity_function'])
+
     # Set the seedgenerating number to a number that will not be reached for a
     # method this computationally expensive.
     seed_rep = rep_number
     if seed_rep == 'test':
         seed_rep = '999'
-    
-    # Generate a seed depending on input parameters since fixed seed would lead
-    # to producing the same data for each simulation repetition.
-    seed = int(setup_name[-1]+seed_rep+d+str(len(setup_name))+str(len(seed_rep))+str(len(d)))
+
+    # Generate a seed depending on input parameters since fixed seed would 
+    # lead to producing the same data for each simulation repetition.
+    seed = int(setup_name[-1]+seed_rep+d +
+               str(len(setup_name))+str(len(seed_rep))+str(len(d)))
     np.random.seed(seed)
     data = get_simulated_sample(setup, int(d))
 
