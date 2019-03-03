@@ -129,4 +129,9 @@ setup_name = args[1]
 d = args[2]
 rep_number = args[3]
 
+# As before, set a seed that is individual for each run of this module. 
+seed_number <- as.integer(paste0(d, rep_number, substr(setup_name, nchar(setup_name), nchar(setup_name)), 
+                  toString(nchar(d)),toString(nchar(rep_number)),toString(nchar(setup_name))))
+set.seed(seed_number)
+
 run_and_write_forest(setup_name, d, rep_number)

@@ -86,7 +86,6 @@ if __name__ == "__main__":
     setup_name = sys.argv[1]
     d = sys.argv[2]
     rep_number = sys.argv[3]
-
     setup = json.load(
         open(ppj("IN_MODEL_SPECS", setup_name + "_dgp.json"), encoding="utf-8"))
     sim_param = json.load(
@@ -95,10 +94,21 @@ if __name__ == "__main__":
             encoding="utf-8")
     )
     
+    # Install the required functions that are defined as a string in the setup.
     bef = importlib.import_module('src.model_code.' + setup['base_effect_function'])
     tef = importlib.import_module('src.model_code.' + setup['treatment_effect_function'])
     pf = importlib.import_module('src.model_code.' + setup['propensity_function'])
-
+    
+    # Set the seedgenerating number to a number that will not be reached for a
+    # method this computationally expensive.
+    seed_rep = rep_number
+    if seed_rep == 'test':
+        seed_rep = '999'
+    
+    # Generate a seed depending on input parameters since fixed seed would lead
+    # to producing the same data for each simulation repetition.
+    seed = int(setup_name[-1]+seed_rep+d+str(len(setup_name))+str(len(seed_rep))+str(len(d)))
+    np.random.seed(seed)
     data = get_simulated_sample(setup, int(d))
 
     data.to_json(
