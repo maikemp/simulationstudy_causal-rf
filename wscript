@@ -3,11 +3,12 @@
 
 import os
 import json
-
-sim_param = json.load(open('src/model_specs/simulation_parameters.json'), encoding='utf-8')
-
-
 from collections import OrderedDict
+
+
+sim_param = json.load(
+    open('src/model_specs/simulation_parameters.json'), encoding='utf-8'
+)
 
 # The project root directory and the build directory.
 top = "."
@@ -36,7 +37,6 @@ def set_project_paths(ctx):
     
     for setup in sim_param["list_of_setups"]:
         pp["OUT_DATA_" + setup.upper()] = f"{out}/out/data/{setup}"
-    
     
     # Convert the directories into Waf nodes.
     for key, val in pp.items():
@@ -84,7 +84,6 @@ def configure(ctx):
     ctx.load("write_project_headers")
     # ctx.find_program("dot")
     ctx.load("tex")
-
 
 
 def build(ctx):

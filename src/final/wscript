@@ -1,13 +1,19 @@
 #! python
+
+
 import json
 
-sim_param = json.load(open('src/model_specs/simulation_parameters.json'), encoding='utf-8')
+
+sim_param = json.load(
+    open('src/model_specs/simulation_parameters.json'), encoding='utf-8'
+)
 list_of_setups = sim_param["list_of_setups"]
 d_list = [str(par) for par in sim_param['d_list']]
 
-# List of setups for which treatment effect is only a function of X_0 and therefore
-# plotting the micro data makes sense.
+# List of setups for which treatment effect is only a function of X_0 and
+# therefore plotting the micro data makes sense.
 setups_micro_plot = sim_param["te_only_by_X_0"]
+
 
 def build(ctx):
 
@@ -18,28 +24,36 @@ def build(ctx):
             source='coverage_tables.R',
             deps=[
                 ctx.path_to(ctx, 'OUT_ANALYSIS', 'full_analysis_data.csv'),
-                ctx.path_to(ctx, 'IN_MODEL_SPECS', 'simulation_parameters.json'),
+                ctx.path_to(ctx, 'IN_MODEL_SPECS',
+                            'simulation_parameters.json'),
                 ctx.path_to(ctx, 'IN_MODEL_SPECS', 'k_list.json'),
             ],
-            target=ctx.path_to(ctx, 'OUT_TABLES', 'coverage_table_{}.tex'.format(setup_name)),
+            target=ctx.path_to(ctx, 'OUT_TABLES',
+                               'coverage_table_{}.tex'.format(setup_name)),
             append=setup_name,
             name='make_coverage_table_{}'.format(setup_name)
         )
 
     for setup_name in setups_micro_plot:
-        deplist = [ctx.path_to(ctx, 'IN_MODEL_SPECS', 'simulation_parameters.json')]
+        deplist = [ctx.path_to(ctx, 'IN_MODEL_SPECS',
+                               'simulation_parameters.json')]
         for d in d_list:
-            deplist.extend([ctx.path_to(ctx, 'OUT_ANALYSIS_CRF','crf_data_{}_d={}_micro_data.json'.format(setup_name,d))])
+            deplist.extend([
+                ctx.path_to(ctx, 'OUT_ANALYSIS_CRF',
+                            'crf_data_{}_d={}_micro_data.json'.format(
+                                setup_name, d)
+                            )
+            ])
 
         ctx(
             features='run_py_script',
             source='plot_micro_data.py',
             deps=deplist,
-            target=ctx.path_to(ctx,'OUT_FIGURES','te_plot_{}.png'.format(setup_name)),  
+            target=ctx.path_to(ctx, 'OUT_FIGURES',
+                               'te_plot_{}.png'.format(setup_name)),
             append=setup_name,
             name='te_plot_{}'.format(setup_name)
         )
-
 
     # from src.final.project_dependency_graph import make_project_dependency_graph
 

@@ -1,8 +1,12 @@
 #! python
-# Data Management
+
+
 import json
 
-sim_param = json.load(open('src/model_specs/simulation_parameters.json'), encoding='utf-8')
+
+sim_param = json.load(
+    open('src/model_specs/simulation_parameters.json'), encoding='utf-8'
+)
 repetitions = [str(par) for par in range(sim_param['rep_number'])]
 d_list = [str(par) for par in sim_param['d_list']]
 
@@ -11,33 +15,42 @@ def build(ctx):
 
     for setup in sim_param["list_of_setups"]:
 
-        # Define function names for dependency according to information in the individual setups.
-        dgp = json.load(open('src/model_specs/{}_dgp.json'.format(setup)), encoding='utf-8')
+        # Define function names for dependency according to information in
+        # the individual setups.
+        dgp = json.load(
+            open('src/model_specs/{}_dgp.json'.format(setup)), encoding='utf-8'
+        )
         base_effect_function = dgp['base_effect_function']
         treatment_effect_function = dgp['treatment_effect_function']
         propensity_function = dgp['propensity_function']
 
+        for d in d_list:
 
-        for d in d_list:   
-        
-            rep = repetitions + ['test'] 
-            
+            rep = repetitions + ['test']
+
             for rep_number in rep:
-                
+
                 ctx(
                     features='run_py_script',
                     source='get_simulated_samples.py',
                     deps=[
-                        ctx.path_to(ctx,'IN_MODEL_SPECS', '{}_dgp.json'.format(setup)),
-                        ctx.path_to(ctx,'IN_MODEL_CODE', base_effect_function +'.py'),
-                        ctx.path_to(ctx,'IN_MODEL_CODE', treatment_effect_function + '.py'),
-                        ctx.path_to(ctx,'IN_MODEL_CODE', propensity_function + '.py')
+                        ctx.path_to(ctx, 'IN_MODEL_SPECS',
+                                    '{}_dgp.json'.format(setup)),
+                        ctx.path_to(ctx, 'IN_MODEL_CODE',
+                                    base_effect_function + '.py'),
+                        ctx.path_to(ctx, 'IN_MODEL_CODE',
+                                    treatment_effect_function + '.py'),
+                        ctx.path_to(ctx, 'IN_MODEL_CODE',
+                                    propensity_function + '.py')
                     ],
                     target=[
-                        ctx.path_to(ctx, 'OUT_DATA_' + setup.upper(), 'sample_{}_d={}_rep_{}.json'.format(setup, d, rep_number))
+                        ctx.path_to(
+                            ctx,
+                            'OUT_DATA_' + setup.upper(),
+                            'sample_{}_d={}_rep_{}.json'.format(
+                                setup, d, rep_number)
+                        )
                     ],
                     append=[setup, d, rep_number],
                     name='sample_{}_d={}_rep_{}'.format(setup, d, rep_number)
                 )
-
-

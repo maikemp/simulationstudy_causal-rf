@@ -9,7 +9,6 @@ from the repective modules in IN_MODEL_CODE.
 
 """
 
-
 import sys
 import json
 import numpy as np
