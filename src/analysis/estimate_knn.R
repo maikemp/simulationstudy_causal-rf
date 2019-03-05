@@ -3,6 +3,16 @@
 The file "estimate_knn.R" estimates treatment effects by k - Nearest
 Neighbor matching and saves out data snippets with the analysis results.
 
+The file expects to be given a setup_name, a value for d and a number
+for the simulation repetition currently at from the wscript. It takes
+a simulated dataset from PATH_OUT_DATA and saves out a one-line dataset
+containing aggregate information on the mse and the coverage frequency for 
+the k nearest neighbor estimator and the corresponding confidence intervals, 
+as well as further information on the dataset processed to PATH_OUT_ANALYSIS_KNN.
+It does so for all values given in k_list.json in PATH_IN_MODEL_SPECS and 
+uses the alpha value from the analysis information on the given setup,
+that is also taken from PATH_IN_MODEL_SPECS.
+
 '
 
 
@@ -67,27 +77,41 @@ run_and_write_knn <- function(setup_name, d, rep_number) {
   # Import the required data, execute the analysis, tie together the
   # data of interest and export to a single json file.
 
-  path_data <<- paste(PATH_OUT_DATA, "/", setup_name, "/sample_", setup_name, "_d=", d, "_rep_", rep_number, ".json", sep = "")
-  path_test_data <<- paste(PATH_OUT_DATA, "/", setup_name, "/sample_", setup_name, "_d=", d, "_rep_test.json", sep = "")
-  path_model_specs <<- paste(PATH_IN_MODEL_SPECS, "/", setup_name, "_analysis.json", sep = "")
-  path_out <<- paste(PATH_OUT_ANALYSIS_KNN, "/knn_data_", setup_name, "_d=", d, "_rep_", rep_number, ".json", sep = "")
+  path_data <<- paste0(
+    PATH_OUT_DATA,
+    "/", setup_name, "/sample_", setup_name, "_d=", d, "_rep_", rep_number, ".json"
+  )
+  path_test_data <<- paste0(
+    PATH_OUT_DATA,
+    "/", setup_name, "/sample_", setup_name, "_d=", d, "_rep_test.json"
+  )
+  path_model_specs <<- paste0(PATH_IN_MODEL_SPECS, "/", setup_name, "_analysis.json")
+  path_out <<- paste0(
+    PATH_OUT_ANALYSIS_KNN,
+    "/knn_data_", setup_name, "_d=", d, "_rep_", rep_number, ".json"
+  )
 
+  # Load required information and data.
   setup <- fromJSON(path_model_specs)
   data <- as.data.frame(do.call("cbind", fromJSON(path_data)))
   test_data <- as.data.frame(do.call("cbind", fromJSON(path_test_data)))
 
-  k_list <<- fromJSON(paste(PATH_IN_MODEL_SPECS, "/k_list.json", sep = ""))
+  k_list <<- fromJSON(paste0(PATH_IN_MODEL_SPECS, "/k_list.json"))
 
   # Run extra analysis for each k value in_param$k_list
   # and attach the results to the exported data frame.
   analysis <- list()
   for (k in k_list$k_list) {
     analysis_k <- predict_knn(data, test_data, setup, k)
-    colnames(analysis_k) <- c(paste("knn_covered_", k, sep = ""), paste("knn_mse_", k, sep = ""))
+    colnames(analysis_k) <- c(
+      paste0("knn_covered_", k),
+      paste0("knn_mse_", k)
+    )
     analysis <- cbind(analysis, analysis_k)
   }
 
-  id <- paste(setup_name, "_d=", d, "_rep_", rep_number, sep = "")
+  # Create an id that identifies the processed dataset.
+  id <- paste0(setup_name, "_d=", d, "_rep_", rep_number)
   out_data <- cbind(id, analysis)
 
   export_json <- toJSON(as.data.frame(out_data))

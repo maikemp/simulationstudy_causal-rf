@@ -20,19 +20,27 @@ package.check <- lapply(packages, FUN = function(x) {
 source("project_paths.r")
 
 create_dataset <- function() {
-  #Load all created data snippets and stack them in a dataframe containing 
-  #aggregate information about the simulation results.
-  
-  sim_param <<- fromJSON(paste(PATH_IN_MODEL_SPECS, "/simulation_parameters.json", sep = ""))
+  # Load all created data snippets and stack them in a dataframe containing
+  # aggregate information about the simulation results.
 
-  n_dt <- length(sim_param$d_list) * length(sim_param$list_of_setups) * length(seq(sim_param$rep_number))
+  sim_param <<- fromJSON(paste0(PATH_IN_MODEL_SPECS, "/simulation_parameters.json"))
+
+  n_dt <- length(sim_param$d_list) *
+    length(sim_param$list_of_setups) * length(seq(sim_param$rep_number))
+  # Initiate the dataset that will be appended.
   all_data <- data.frame(const = rep(1, n_dt))
+  
+  # Loop over all the parameters iterated before on the command line to create
+  # the different datasnippets and put them together into one data file.
   for (method in sim_param$list_of_methods) {
     method_data <- data.frame()
     for (setup_name in sim_param$list_of_setups) {
       for (d in sim_param$d_list) {
         for (rep_number in seq(sim_param$rep_number) - 1) {
-          path <<- paste(PATH_OUT_ANALYSIS, "/", method, "/", method, "_data_", setup_name, "_d=", d, "_rep_", rep_number, ".json", sep = "")
+          path <<- paste0(PATH_OUT_ANALYSIS,
+            "/", method, "/", method, "_data_", setup_name,
+            "_d=", d, "_rep_", rep_number, ".json"
+          )
           new_line <- t(fromJSON(path))
           method_data <- rbind(method_data, new_line)
         }
@@ -40,8 +48,9 @@ create_dataset <- function() {
     }
     all_data <- cbind(all_data, method_data)
   }
-
-  path_out <<- paste(PATH_OUT_ANALYSIS, "/full_analysis_data.csv", sep = "")
+  
+  # Write to one single csv dataset.
+  path_out <<- paste0(PATH_OUT_ANALYSIS, "/full_analysis_data.csv")
   fwrite(all_data, path_out)
 }
 

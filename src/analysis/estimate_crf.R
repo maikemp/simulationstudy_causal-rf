@@ -5,10 +5,22 @@ and confidence intervals for them using the causalForest functions
 written by Wager & Athey (2018) and saves out data snippets with the analysis
 results.
 
+The file expects to be given a setup_name, a value for d and a number
+for the simulation repetition currently at from the wscript. It takes
+a simulated dataset from PATH_OUT_DATA and saves out a one-line dataset
+containing aggregate information on the mse and the coverage frequency for 
+the causal random forest estimator and the corresponding confidence intervals, 
+as well as further information on the dataset processed to PATH_OUT_ANALYSIS_CRF.
+It uses information the parameters given in *setup_name*_analysis.json in the
+PATH_IN_MODEL_SPECS.
+
 '
 
 
-packages <- c("R.utils", "pracma", "Matrix", "dplyr", "RJSONIO", "devtools", "randomForestCI", "causalForest", "mgcv", "Hmisc")
+packages <- c(
+  "R.utils", "pracma", "Matrix", "dplyr", "RJSONIO", "devtools", "randomForestCI",
+  "causalForest", "mgcv", "Hmisc"
+)
 
 package.check <- lapply(packages, FUN = function(x) {
   suppressWarnings(suppressPackageStartupMessages(
@@ -40,7 +52,7 @@ predict_forest <- function(dataframe, testset, setup) {
   n <- length(Y)
   d <- ncol(X)
 
-  # Get number of trees as numeric value or from the respecitve function depending on the value in the setup.
+  # Get number of trees as numeric value or from the defined function in .
   if (is.numeric(setup$n_tree_function)) {
     n_tree <- setup$n_tree_function
   } else {
@@ -49,7 +61,8 @@ predict_forest <- function(dataframe, testset, setup) {
     n_tree <- n_tree_function(n)
   }
 
-  # Get sample size as numeric value or from the respecitve function depending on the value in the setup.
+  # Get sample size as numeric value or from the defined function if a 
+  # function name is given.
   if (is.numeric(setup$sample_size_function)) {
     sample_size <- setup$sample_size_function
   } else {
@@ -68,7 +81,7 @@ predict_forest <- function(dataframe, testset, setup) {
 
   # Use the fitted model to predict treatment effects for the test sample.
   crf_tau <- predict(forest, X_test)
-  # Obtain the infinitesimal jackknife for random forests for an estimate of the variance.
+  # Use the infinitesimal jackknife for random forests as estimate of the variance.
   forest_ci <- randomForestInfJack(forest, X_test, calibrate = TRUE)
   crf_se_hat <- sqrt(forest_ci$var.hat)
 
@@ -84,24 +97,42 @@ predict_forest <- function(dataframe, testset, setup) {
 
   micro_data <- cbind(X_test[1], true_effect, crf_tau, crf_cov, half_ci_width)
 
-  return(list("results" = cbind(n, d, crf_covered, crf_mse, n_tree, sample_size), "micro_data" = micro_data))
+  return(
+    list(
+    "results" = cbind(n, d, crf_covered, crf_mse, n_tree, sample_size), 
+    "micro_data" = micro_data
+    )
+  )
 }
 
 run_and_write_forest <- function(setup_name, d, rep_number) {
   # Import the required data, execute the analysis, tie together the
   # data of interest and export to a single json file.
 
-  path_data <<- paste0(PATH_OUT_DATA, "/", setup_name, "/sample_", setup_name, "_d=", d, "_rep_", rep_number, ".json")
-  path_test_data <<- paste0(PATH_OUT_DATA, "/", setup_name, "/sample_", setup_name, "_d=", d, "_rep_test.json")
-  path_model_specs <<- paste0(PATH_IN_MODEL_SPECS, "/", setup_name, "_analysis.json")
-  path_out <<- paste0(PATH_OUT_ANALYSIS_CRF, "/crf_data_", setup_name, "_d=", d, "_rep_", rep_number, ".json")
+  path_data <<- paste0(
+    PATH_OUT_DATA, 
+    "/", setup_name, "/sample_", setup_name, "_d=", d, "_rep_", rep_number, ".json"
+  )
+  path_test_data <<- paste0(
+    PATH_OUT_DATA, 
+    "/", setup_name, "/sample_", setup_name, "_d=", d, "_rep_test.json"
+  )
+  path_model_specs <<- paste0(
+    PATH_IN_MODEL_SPECS, 
+    "/", setup_name, "_analysis.json"
+  )
+  path_out <<- paste0(
+    PATH_OUT_ANALYSIS_CRF, 
+    "/crf_data_", setup_name, "_d=", d, "_rep_", rep_number, ".json"
+  )
   path_trash <<- paste0(PATH_OUT_ANALYSIS_CRF, "/trash.txt")
 
   setup <- fromJSON(path_model_specs)
   data <- as.data.frame(do.call("cbind", fromJSON(path_data)))
   test_data <- as.data.frame(do.call("cbind", fromJSON(path_test_data)))
 
-  # Make a sink for the print messages from the forest estimation to keep terminal clean.
+  # Make a sink for the print messages from the forest estimation 
+  # to keep the terminal clean.
   sink(file = paste0(path_trash))
 
   # Run analysis and extract aggregated data and micro data.
@@ -111,14 +142,18 @@ run_and_write_forest <- function(setup_name, d, rep_number) {
 
   # Create result data frame and save out to json file.
   foresttype <- setup$foresttype
-  id <- paste(setup_name, "_d=", d, "_rep_", rep_number, sep = "")
+  # Create an id that identifies the processed dataset.
+  id <- paste0(setup_name, "_d=", d, "_rep_", rep_number)
   data <- data.frame(id, setup_name, results, foresttype)
   export_json <- toJSON(data)
   write(export_json, path_out)
 
   # Create micro data only for the first repetition of any setup.
   if (rep_number == 0) {
-    path_out_micro <- paste0(PATH_OUT_ANALYSIS_CRF, "/crf_data_", setup_name, "_d=", d, "_micro_data.json")
+    path_out_micro <- paste0(
+      PATH_OUT_ANALYSIS_CRF, 
+      "/crf_data_", setup_name, "_d=", d, "_micro_data.json"
+    )
     micro_data <- analysis$micro_data
     export_json <- toJSON(micro_data)
     write(export_json, path_out_micro)
@@ -130,7 +165,7 @@ setup_name <- args[1]
 d <- args[2]
 rep_number <- args[3]
 
-# As before, set a seed that is individual for each run of this module.
+# Set a seed that is individual for each run of this module.
 seed_number <- as.integer(paste0(
   d, rep_number, substr(setup_name, nchar(setup_name), nchar(setup_name)),
   toString(nchar(d)), toString(nchar(rep_number)), toString(nchar(setup_name))

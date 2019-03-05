@@ -3,6 +3,9 @@
 The file "coverage_tables.R" uses the compact analysis data, averages 
 over simulation runs and makes a latex table out of the results.
 
+This file expects to be given the setup name through the command line
+and it writes coverage_table_*setup_name*.tex to PATH_OUT_TABLES.
+
 '
 
 
@@ -64,7 +67,10 @@ create_output_table <- function(setup_name) {
   }
   
   # Sort the table alphabetically to put coverage rates and MSE together.
-  data_table <- cbind(data_table["d"], data_table[, (2:ncol(data_table))][, order(names(data_table[, (2:ncol(data_table))]))])
+  data_table <- cbind(
+    data_table["d"], 
+    data_table[, (2:ncol(data_table))][, order(names(data_table[, (2:ncol(data_table))]))]
+  )
   return(data_table)
 }
 
@@ -97,7 +103,6 @@ write_to_latex <- function(output_table, setup_name) {
 }
 
 
-# This file expects to be given the setup name through the command line.
 args <- commandArgs(trailingOnly = TRUE)
 setup_name <- args[1]
 
