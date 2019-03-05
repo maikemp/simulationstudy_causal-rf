@@ -1,7 +1,7 @@
 {
     "rep_number": 2,
-    "list_of_setups": ["setup_1", "setup_4"],
+    "list_of_setups": ["setup_1", "setup_2", "setup_3", "setup_4"],
     "te_only_by_X_0": ["setup_4"],
-    "d_list": [2, 3, 5, 8],
+    "d_list": [2, 3, 5, 8, 10],
     "list_of_methods": ["crf", "knn"]
 }

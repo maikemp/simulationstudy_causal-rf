@@ -1,6 +1,6 @@
 {
     "node_size": 1,
-    "n_tree_function": 250,
+    "n_tree_function": "n_tree_function_1",
     "sample_size_function": "sample_size_function_1",
     "foresttype": "double_sample",
     "alpha": 0.05

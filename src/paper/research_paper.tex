@@ -94,11 +94,11 @@ Nearest neighbor methods exploit this assumption. As is described by \citet{lj06
 As explained in detail by \citet{hir03}, if a consistent estimator for the propensity of receiving treatment \(e(x) = \mathbb{E}[W_i|X_i = x]\)  is available, an unbiased estimator for the treatement effect could be obtained employing: 
 \input{formulas/propensity_estimation}
 
-Generally, a random regression forest is build by subsampling (originally by bootstrapping) the data and then growing a tree on each subsample by recursively partitioning the data in order to get the best fit according to some splitting criterion \citep[p. 304 \psqq]{htf08}. The partitioning is repeated until some stopping criterion is achieved. The idea is that the data points in the terminal nodes of a trees are similar to each other and therefore a constant estimator as a simple average over the observed outcomes suffices:
+Generally, a random regression forest is build by subsampling (originally by bootstrapping) the data and then growing a tree on each subsample by recursively partitioning the data in order to get the best fit according to some splitting criterion \citep[p.~304 ff.]{htf08}. The partitioning is repeated until some stopping criterion is achieved. The idea is that the data points in the terminal nodes of a trees are similar to each other and therefore a constant estimator as a simple average over the observed outcomes suffices:
 \input{formulas/tree_estimator}
 where \(L(x)\) denotes the leaf containing \(x\).
 The variable to split on is selected from a randomly chosen subset of variables only, in order to decorrelate the individual trees to decrease variance. Since individual trees generally exhibit low bias but large variance, averaging at each data point over the estimators of all subsample-trees, can lead to a substantially improved estimator. 
-For a comprehensive overview over this method, see \cite[p. 587 \psqq]{htf08}.
+For a comprehensive overview over this method, see \cite[p.~587 ff.]{htf08}.
 
 To obtain an estimator of heterogeneous treatment effects, \cite{wa18} use the following estimator:
 \input{formulas/tau_forest_estimator}
@@ -107,6 +107,12 @@ Similarly the nearest neighbor matching estimator is given by:
 \input{formulas/tau_knn_estimator}
 where \(S_1\) and \(S_0\) represent the k nearest neighbors in the treatment and control group, respectively.   
 
+To prove pointwise consistency and asymptotic Gaussianity for the random forest estimator, in addition to the above mentioned assumptions \cite{wa18} require overlap and, which means that at each data point, the probabilities to receive and not to receive treatment are strictly positive as well as a property they call "honesty". It means that for each observation, the response can only be used either to select the model (that is to place the splits) or to estimate the treatment effect, but not for both. Furthermore, the conditional expectations of the outcome under treatment and without treatment at any data point have to be Lipschitz continuous.
+They show that under these conditions, when using the infinitesimal jackknife developed by \cite{e14} to consistently estimate the variance and under some additional regularity assumptions, the treatment effect estimator from such a random forest is pointwise consistent for the true treatment effect and has an asymptotically Gaussian and centered sampling distribution so that asymptotic confidence intervals can be constructed. 
+
+\cite{wa18} develop two algorithms satisfying honesty: the double-sample trees and the propensity trees. The first one 
+
+% Describe each algorithm in one sentence and refer to paper again...
 
 
 \(\) \(\) 
@@ -132,8 +138,13 @@ where \(S_1\) and \(S_0\) represent the k nearest neighbors in the treatment and
     
 \input{../../out/tables/coverage_table_setup_1.tex}
 
+\input{../../out/tables/coverage_table_setup_2.tex}
+
+\input{../../out/tables/coverage_table_setup_3.tex}
 
 \input{../../out/tables/coverage_table_setup_4.tex}
+
+\input{../../out/tables/coverage_table_setup_5.tex}
 
 
 \section{Conclusion} % (fold)
