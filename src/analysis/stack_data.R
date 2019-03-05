@@ -17,7 +17,9 @@ package.check <- lapply(packages, FUN = function(x) {
   ))
 })
 
+
 source("project_paths.r")
+
 
 create_dataset <- function() {
   # Load all created data snippets and stack them in a dataframe containing
@@ -29,7 +31,7 @@ create_dataset <- function() {
     length(sim_param$list_of_setups) * length(seq(sim_param$rep_number))
   # Initiate the dataset that will be appended.
   all_data <- data.frame(const = rep(1, n_dt))
-  
+
   # Loop over all the parameters iterated before on the command line to create
   # the different datasnippets and put them together into one data file.
   for (method in sim_param$list_of_methods) {
@@ -37,7 +39,8 @@ create_dataset <- function() {
     for (setup_name in sim_param$list_of_setups) {
       for (d in sim_param$d_list) {
         for (rep_number in seq(sim_param$rep_number) - 1) {
-          path <<- paste0(PATH_OUT_ANALYSIS,
+          path <<- paste0(
+            PATH_OUT_ANALYSIS,
             "/", method, "/", method, "_data_", setup_name,
             "_d=", d, "_rep_", rep_number, ".json"
           )
@@ -48,10 +51,11 @@ create_dataset <- function() {
     }
     all_data <- cbind(all_data, method_data)
   }
-  
+
   # Write to one single csv dataset.
   path_out <<- paste0(PATH_OUT_ANALYSIS, "/full_analysis_data.csv")
   fwrite(all_data, path_out)
 }
+
 
 create_dataset()

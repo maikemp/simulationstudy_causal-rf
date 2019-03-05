@@ -31,6 +31,7 @@ package.check <- lapply(packages, FUN = function(x) {
   ))
 })
 
+
 source("project_paths.r")
 
 
@@ -61,7 +62,7 @@ predict_forest <- function(dataframe, testset, setup) {
     n_tree <- n_tree_function(n)
   }
 
-  # Get sample size as numeric value or from the defined function if a 
+  # Get sample size as numeric value or from the defined function if a
   # function name is given.
   if (is.numeric(setup$sample_size_function)) {
     sample_size <- setup$sample_size_function
@@ -99,8 +100,8 @@ predict_forest <- function(dataframe, testset, setup) {
 
   return(
     list(
-    "results" = cbind(n, d, crf_covered, crf_mse, n_tree, sample_size), 
-    "micro_data" = micro_data
+      "results" = cbind(n, d, crf_covered, crf_mse, n_tree, sample_size),
+      "micro_data" = micro_data
     )
   )
 }
@@ -110,19 +111,19 @@ run_and_write_forest <- function(setup_name, d, rep_number) {
   # data of interest and export to a single json file.
 
   path_data <<- paste0(
-    PATH_OUT_DATA, 
+    PATH_OUT_DATA,
     "/", setup_name, "/sample_", setup_name, "_d=", d, "_rep_", rep_number, ".json"
   )
   path_test_data <<- paste0(
-    PATH_OUT_DATA, 
+    PATH_OUT_DATA,
     "/", setup_name, "/sample_", setup_name, "_d=", d, "_rep_test.json"
   )
   path_model_specs <<- paste0(
-    PATH_IN_MODEL_SPECS, 
+    PATH_IN_MODEL_SPECS,
     "/", setup_name, "_analysis.json"
   )
   path_out <<- paste0(
-    PATH_OUT_ANALYSIS_CRF, 
+    PATH_OUT_ANALYSIS_CRF,
     "/crf_data_", setup_name, "_d=", d, "_rep_", rep_number, ".json"
   )
   path_trash <<- paste0(PATH_OUT_ANALYSIS_CRF, "/trash.txt")
@@ -131,7 +132,7 @@ run_and_write_forest <- function(setup_name, d, rep_number) {
   data <- as.data.frame(do.call("cbind", fromJSON(path_data)))
   test_data <- as.data.frame(do.call("cbind", fromJSON(path_test_data)))
 
-  # Make a sink for the print messages from the forest estimation 
+  # Make a sink for the print messages from the forest estimation
   # to keep the terminal clean.
   sink(file = paste0(path_trash))
 
@@ -151,7 +152,7 @@ run_and_write_forest <- function(setup_name, d, rep_number) {
   # Create micro data only for the first repetition of any setup.
   if (rep_number == 0) {
     path_out_micro <- paste0(
-      PATH_OUT_ANALYSIS_CRF, 
+      PATH_OUT_ANALYSIS_CRF,
       "/crf_data_", setup_name, "_d=", d, "_micro_data.json"
     )
     micro_data <- analysis$micro_data
@@ -159,6 +160,7 @@ run_and_write_forest <- function(setup_name, d, rep_number) {
     write(export_json, path_out_micro)
   }
 }
+
 
 args <- commandArgs(trailingOnly = TRUE)
 setup_name <- args[1]

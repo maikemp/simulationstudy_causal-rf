@@ -27,6 +27,7 @@ package.check <- lapply(packages, FUN = function(x) {
   ))
 })
 
+
 source("project_paths.r")
 
 
@@ -123,6 +124,5 @@ args <- commandArgs(trailingOnly = TRUE)
 setup_name <- args[1]
 d <- args[2]
 rep_number <- args[3]
-
 
 run_and_write_knn(setup_name, d, rep_number)

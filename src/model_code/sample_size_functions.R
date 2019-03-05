@@ -11,6 +11,7 @@ sample_size_function_1 <- function(n){
   return(s)
 }
 
+
 sample_size_function_2 <- function(n){
   s <- n/2
   return(s)
