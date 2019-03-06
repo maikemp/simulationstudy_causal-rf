@@ -45,12 +45,11 @@ def get_simulated_sample(setup, d):
     """
 
     if setup['x_distr'] == 'normal':
-        if setup['x_ncorr'] == '0':
-            cov = _get_covariance_matrix(d, 0)
         if setup['x_ncorr'] == 'd':
             cov = _get_covariance_matrix(d, d)
         else:
-            raise ValueError('No defined value for number of corr. variables.')
+            cov = _get_covariance_matrix(d, setup['x_ncorr'])
+
         X = np.random.multivariate_normal(np.zeros(d), cov, setup['n'])
     if setup['x_distr'] == 'uniform':
         X = np.random.uniform(setup['x_low'], setup['x_high'], (setup['n'], d))

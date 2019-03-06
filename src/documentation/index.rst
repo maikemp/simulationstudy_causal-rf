@@ -5,7 +5,8 @@
 
 
 Welcome to the  Simulation Study on the Coverage Probabilities of Confidence Intervals for Heterogeneous Treatment Effects Estimated with Causal Random Forests project's documentation!
-================================================================================================
+===============================================================================================================================================================================================
+
 
 .. toctree::
     :maxdepth: 2
