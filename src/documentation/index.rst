@@ -12,10 +12,10 @@ Welcome to the  Simulation Study on the Coverage Probabilities of Confidence Int
     :maxdepth: 2
 
     introduction
+    model_specs
+    model_code
     data_management
     analysis
     final
     paper
-    model_code
-    model_specs
     references
