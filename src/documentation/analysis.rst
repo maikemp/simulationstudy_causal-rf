@@ -40,6 +40,9 @@ PATH_IN_MODEL_SPECS. It needs the following values from there:
  * A value for node_size
  * A value for the confidence level alpha
 
+ This file loads a number of packages and even has to download two packages from github.
+ It will happen automatically, but the first run will therefore require more time.
+
 
 Estimate k Nearest Neighbor
 ===========================

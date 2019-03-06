@@ -7,7 +7,7 @@
 \usepackage{longtable, booktabs, tabularx}
 \usepackage{fancyvrb, moreverb, relsize}
 \usepackage{eurosym, calc}
-\usepackage{amsmath, amssymb, amsfonts, amsthm, bm} 
+\usepackage{amsmath, amssymb, amsfonts, amsthm, bm, MnSymbol} 
 
 
 
@@ -39,15 +39,76 @@
 \end{frame}
 
 
-\begin{frame}[t]
+
+\begin{frame}
     \frametitle{heading here}
-    \begin{itemize}
-        \item<+-> Please cite this template as: \citet{GaudeckerEconProjectTemplates}
-        \item<+-> \citet{Schelling69} example in the code is taken from \citet{StachurskiSargent13}.
-        \item<+-> The decision rule of an agent is 
-    \end{itemize}
-    \note{~}
+    \citet{GaudeckerEconProjectTemplates}
+    
 \end{frame}
+
+
+\begin{frame}
+    \frametitle{heading here}
+
+    \input{formulas/setup_table.tex} 
+
+\end{frame}
+
+
+
+\begin{frame}
+    \frametitle{heading here}
+    
+    \input{../../out/tables/coverage_table_setup_1.tex}
+
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{heading here}
+    
+    \input{../../out/tables/coverage_table_setup_2.tex}
+
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{heading here}
+    
+    \input{../../out/tables/coverage_table_setup_3.tex}
+
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{heading here}
+    
+    \input{../../out/tables/coverage_table_setup_4.tex}
+
+\end{frame}
+
+
+
+\begin{frame}
+    \frametitle{heading here}
+    
+    \begin{figure}
+        \caption{Plot of Micro data for one forest and one testset of Setup 4 with d=3}
+    
+        \includegraphics[height=0.8\textheight]{../../out/figures/te_plot_setup_4}
+
+    \end{figure}
+
+\end{frame}
+%\begin{frame}[t]
+%    \frametitle{heading here}
+%    \begin{itemize}
+%        \item<+-> Please cite this template as: \citet{GaudeckerEconProjectTemplates}
+%        \item<+-> \citet{Schelling69} example in the code is taken from \citet{StachurskiSargent13}.
+%        \item<+-> The decision rule of an agent is 
+%    \end{itemize}
+%    \note{~}
+%\end{frame}
 
 
 % Print black screen only in presentation mode for finishing up.
