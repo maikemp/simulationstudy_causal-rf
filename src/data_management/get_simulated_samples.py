@@ -1,5 +1,5 @@
 """Draw simulated dataset using model specifications specified in
-IN_MODEL_SPECS and store in a numpy array.
+IN_MODEL_SPECS and store in a json file in OUT_DATA.
 
 Module requires to be given a setup_name corresponding to a json file called 
 ``[setup_name]_dgp.json`` in IN_MODEL_SPECS, the number of features d as well 

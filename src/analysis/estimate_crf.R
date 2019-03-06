@@ -3,7 +3,8 @@
 The file "estimate_crf.R" estimates treatment effects by causal forests 
 and confidence intervals for them using the causalForest functions 
 written by Wager & Athey (2018) and saves out data snippets with the analysis
-results.
+results as well as a dataset containing per-observation analysis data for the 
+first repetition of the simulation.
 
 The file expects to be given a setup_name, a value for d and a number
 for the simulation repetition currently at from the wscript. It takes
@@ -11,7 +12,10 @@ the simulated dataset corresponding to these values from PATH_OUT_DATA
 and saves out a one-line json-datafile containing aggregate information on 
 the mse and the coverage frequency for the causal random forest estimator and 
 the corresponding confidence intervals, as well as further information on 
-the dataset processed to PATH_OUT_ANALYSIS_CRF.
+the dataset processed to PATH_OUT_ANALYSIS_CRF. For the first repetition number
+it also creates there a data file containing the values of the first feature, 
+the true and the estimated treatment effect as well as a coverage indicator and 
+the width of the estimated confidence interval for each observation.
 
 It uses information the parameters given in ``[setup_name]_analysis.json`` in the
 PATH_IN_MODEL_SPECS. It needs the following values from there: 
@@ -27,14 +31,24 @@ PATH_IN_MODEL_SPECS. It needs the following values from there:
 
 
 packages <- c(
-  "R.utils", "pracma", "Matrix", "dplyr", "RJSONIO", "devtools", "randomForestCI",
-  "causalForest", "mgcv", "Hmisc"
+  "R.utils", "pracma", "Matrix", "dplyr", "RJSONIO", "devtools", "mgcv", "Hmisc"
 )
 
 package.check <- lapply(packages, FUN = function(x) {
   suppressWarnings(suppressPackageStartupMessages(
     if (!require(x, character.only = TRUE)) {
       install.packages(x, dependencies = TRUE)
+      library(x, character.only = TRUE)
+    }
+  ))
+})
+
+packages_gh <- c("randomForestCI", "causalForest")
+
+package.check_gh_swager <- lapply(packages_gh, FUN = function(x) {
+  suppressWarnings(suppressPackageStartupMessages(
+    if (!require(x, character.only = TRUE)) {
+      install_github(paste0("swager/",x), dependencies = TRUE)
       library(x, character.only = TRUE)
     }
   ))
