@@ -1,7 +1,8 @@
 '
 
 The file "stack_data.R" loads all data snippets produced by the 
-estimate_*.R files and stacks them together into one csv dataframe.
+``estimate_[method_name].R`` files and stacks them together into 
+one csv dataframe.
 
 '
 

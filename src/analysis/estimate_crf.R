@@ -13,13 +13,13 @@ the mse and the coverage frequency for the causal random forest estimator and
 the corresponding confidence intervals, as well as further information on 
 the dataset processed to PATH_OUT_ANALYSIS_CRF.
 
-It uses information the parameters given in *setup_name*_analysis.json in the
+It uses information the parameters given in ``[setup_name]_analysis.json`` in the
 PATH_IN_MODEL_SPECS. It needs the following values from there: 
  * A specification of the foresttype
- * A specification of a number for n_tree or a function name for which the corresponding
-   function will then be loaded form PATH_IN_MODEL_CODE/n_tree_functions.R 
+ * A specification of a number for n_tree or a function name for which the 
+   corresponding function will then be loaded form *PATH_IN_MODEL_CODE/n_tree_functions.R* 
  * A specification of a number for sample_size or a function name for which the 
-   corresponding will then be loaded form PATH_IN_MODEL_CODE/sample_size_functions.R
+   corresponding will then be loaded form *PATH_IN_MODEL_CODE/sample_size_functions.R*
  * A value for node_size
  * A value for the confidence level alpha
 

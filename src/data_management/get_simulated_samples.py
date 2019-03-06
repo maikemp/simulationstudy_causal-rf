@@ -1,11 +1,11 @@
 """Draw simulated dataset using model specifications specified in
 IN_MODEL_SPECS and store in a numpy array.
 
-Module requires to be given a setup corresponding to a json file, the number  
-of independent variables as well as a repetition number indicating the 
-repetition currently at for the simulation. Furthermore, it loads the required 
-functions for the base effect, the treatment effect and the propensity score 
-from the repective modules in IN_MODEL_CODE.
+Module requires to be given a setup_name corresponding to a json file called 
+``[setup_name]_dgp.json`` in IN_MODEL_SPECS, the number of features d as well 
+as a rep_number indicating the repetition currently at for the simulation. It 
+loads the required functions for the base effect, the treatment effect and the 
+propensity score from the repective modules in IN_MODEL_CODE.
 
 """
 
@@ -40,7 +40,9 @@ def _get_covariance_matrix(d, n_corr):
 
 
 def get_simulated_sample(setup, d):
-    """Draw a simulated sample according to a set of parameter values."""
+    """Draw a simulated sample according to a set of parameter values.
+
+    """
 
     if setup['x_distr'] == 'normal':
         if setup['x_ncorr'] == '0':
@@ -91,13 +93,8 @@ if __name__ == "__main__":
             encoding="utf-8"
         )
     )
-    sim_param = json.load(
-        open(
-            ppj("IN_MODEL_SPECS", "simulation_parameters.json"),
-            encoding="utf-8")
-    )
 
-    # Install the required functions that are defined as a string in the setup.
+    # Import the required functions that are defined as a string in the setup.
     bef = importlib.import_module(
         'src.model_code.' + setup['base_effect_function']
     )
@@ -112,7 +109,7 @@ if __name__ == "__main__":
     if seed_rep == 'test':
         seed_rep = '999'
 
-    # Generate a seed depending on input parameters since fixed seed would 
+    # Generate a seed depending on input parameters since fixed seed would
     # lead to producing the same data for each simulation repetition.
     seed = int(setup_name[-1]+seed_rep+d +
                str(len(setup_name))+str(len(seed_rep))+str(len(d)))

@@ -1,3 +1,12 @@
+"""Make one multiplot of plots showing the true and the estimated treatment
+effect as a function of X_1 for multiple d values for one setup.
+
+This module expects to be given a setup_name corresponding to a json dataset
+with micro data on the true and the estimated treatment effect in 
+OUT_ANALYSIS_CRF. Furthermore it requires the values used in d_list in the
+*IN_MODEL_SPECS/simulation_parameters.json*.
+
+"""
 import json
 import sys
 import pandas as pd
