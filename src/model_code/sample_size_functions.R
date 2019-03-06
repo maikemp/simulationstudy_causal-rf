@@ -1,6 +1,6 @@
 '
 
-In the file sample_size_functions.R, I define all functions descirbing how 
+In the file "sample_size_functions.R", I define all functions descirbing how 
 to choose the sample size used for the causal random forest estimation.
 
 '

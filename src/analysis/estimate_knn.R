@@ -119,7 +119,7 @@ run_and_write_knn <- function(setup_name, d, rep_number) {
   write(export_json, path_out)
 }
 
-
+# Define values from command line and execute the functions.
 args <- commandArgs(trailingOnly = TRUE)
 setup_name <- args[1]
 d <- args[2]

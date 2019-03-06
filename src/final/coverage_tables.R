@@ -40,15 +40,19 @@ create_output_table <- function(setup_name) {
   # Initiate the data table.
   data_table <- data.frame(d = as.integer(sim_param$d_list))
   
-  # For all included methods avergae results over simulation repetitions and stack
-  # together the lines and columns, first for knn since it has different k-values, then 
-  # for all othe methods.
+  # For all included methods avergae results over simulation repetitions and 
+  # stack together the lines and columns, first for knn since it has different  
+  # k-values, then for all other methods.
   for (method in sim_param$list_of_methods) {
     if (method == "knn") {
       for (k in k_list$k_list) {
         knn_values <- data.frame()
+        
         for (d in sim_param$d_list) {
-          coverage <- mean(unlist(setup_data[paste0(method, "_covered_", k)][setup_data$d == d, ]))
+          # Average results over all simulation repetitions and stack to data frame.
+          coverage <- mean(
+            unlist(setup_data[paste0(method, "_covered_", k)][setup_data$d == d, ])
+          )
           mse <- mean(unlist(setup_data[paste0(method, "_mse_", k)][setup_data$d == d, ]))
           line <- cbind(coverage, mse)
           colnames(line) <- c(paste0("Coverage ", k, "-NN"), paste0("MSE ", k, "-NN"))
@@ -58,6 +62,7 @@ create_output_table <- function(setup_name) {
       }
     } else {
       values <- data.frame()
+      
       for (d in sim_param$d_list) {
         coverage <- mean(unlist(setup_data[paste0(method, "_covered")][setup_data$d == d, ]))
         mse <- mean(unlist(setup_data[paste0(method, "_mse")][setup_data$d == d, ]))
@@ -82,14 +87,17 @@ write_to_latex <- function(output_table, setup_name) {
   # Use xtable to create latex output.
   
   # Replace underscores by spaces to name setup in the caption.
-  xtab <- xtable(output_table, caption = paste("Simulation results for", gsub("_", " ", setup_name)))
+  xtab <- xtable(
+    output_table, 
+    caption = paste("Simulation results for", gsub("_", " ", setup_name))
+  )
   # Only take the method name from the column names.
   colnames(xtab) <- gsub("^.* ", "", colnames(output_table))
 
   addtorow <- list()
   addtorow$pos <- list(-1)
   
-  # Create additional headline for the output table to denote coverage rates and MSE
+  # Create additional headline for output table to denote coverage rates and MSE
   addtorow$command <- paste0(
     paste0("& \\multicolumn{",
       length(sim_param$list_of_methods) + length(k_list$k_list) - 1,
@@ -106,6 +114,7 @@ write_to_latex <- function(output_table, setup_name) {
 }
 
 
+# Define values from command line and execute the functions.
 args <- commandArgs(trailingOnly = TRUE)
 setup_name <- args[1]
 

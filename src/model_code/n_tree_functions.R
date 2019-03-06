@@ -1,6 +1,6 @@
 '
 
-In the file n_tree_functions.R, I define all functions defining the
+In the file "n_tree_functions.R", I define all functions defining the
 number of trees grown in each forest.
 
 '

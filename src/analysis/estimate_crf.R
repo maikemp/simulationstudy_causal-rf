@@ -170,7 +170,7 @@ run_and_write_forest <- function(setup_name, d, rep_number) {
   }
 }
 
-
+# Define values that will be given from Waf.
 args <- commandArgs(trailingOnly = TRUE)
 setup_name <- args[1]
 d <- args[2]
