@@ -31,7 +31,7 @@ package.check <- lapply(packages, FUN = function(x) {
 source("project_paths.r")
 
 
-predict_knn <- function(dataframe, testset, setup, k) {
+predict_knn <- function(dataframe, testset, alpha, k) {
   "
   Run analysis with k-Nearest Neighbor matching on the given dataset 
   with parameters as defined in the setup, define bounds of the 
@@ -64,7 +64,6 @@ predict_knn <- function(dataframe, testset, setup, k) {
   predict_w1_var <- (predict_w1_2 - predict_w1^2) / (k - 1)
   std_err <- sqrt(predict_w0_var + predict_w1_var)
 
-  alpha <- setup$alpha
   qt <- qt(p = 1 - alpha / 2, df = n - d)
 
   # Derive coverage rate of confidence intervals.
@@ -86,14 +85,12 @@ run_and_write_knn <- function(setup_name, d, rep_number) {
     PATH_OUT_DATA,
     "/", setup_name, "/sample_", setup_name, "_d=", d, "_rep_test.json"
   )
-  path_model_specs <<- paste0(PATH_IN_MODEL_SPECS, "/", setup_name, "_analysis.json")
   path_out <<- paste0(
     PATH_OUT_ANALYSIS_KNN,
     "/knn_data_", setup_name, "_d=", d, "_rep_", rep_number, ".json"
   )
 
   # Load required information and data.
-  setup <- fromJSON(path_model_specs)
   data <- as.data.frame(do.call("cbind", fromJSON(path_data)))
   test_data <- as.data.frame(do.call("cbind", fromJSON(path_test_data)))
 
@@ -102,8 +99,9 @@ run_and_write_knn <- function(setup_name, d, rep_number) {
   # Run extra analysis for each k value in_param$k_list
   # and attach the results to the exported data frame.
   analysis <- list()
+  alpha <- k_list$alpha
   for (k in k_list$k_list) {
-    analysis_k <- predict_knn(data, test_data, setup, k)
+    analysis_k <- predict_knn(data, test_data, alpha, k)
     colnames(analysis_k) <- c(
       paste0("knn_covered_", k),
       paste0("knn_mse_", k)

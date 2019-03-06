@@ -26,6 +26,7 @@ def build(ctx):
 
         for d in d_list:
 
+            # In addition to the repetitions, create one test sample.
             rep = repetitions + ['test']
 
             for rep_number in rep:

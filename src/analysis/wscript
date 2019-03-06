@@ -26,11 +26,6 @@ def build(ctx):
                         '../../project_paths.r',
                         ctx.path_to(
                             ctx,
-                            'IN_MODEL_SPECS',
-                            '{}_analysis.json'.format(setup_name)
-                        ),
-                        ctx.path_to(
-                            ctx,
                             'OUT_DATA_' + setup_name.upper(),
                             'sample_{}_d={}_rep_test.json'.format(
                                 setup_name, d)
@@ -53,6 +48,13 @@ def build(ctx):
 
                     # Define dependencies that are specific to the crf method.
                     if method == 'crf':
+                        deplist.extend([
+                            ctx.path_to(
+                                ctx,
+                                'IN_MODEL_SPECS',
+                                '{}_analysis.json'.format(setup_name)
+                            )
+                        ])
 
                         # Load the setup to check which functions are required. 
                         setup = json.load(
