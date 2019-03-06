@@ -10,8 +10,8 @@ containing aggregate information on the mse and the coverage frequency for
 the k nearest neighbor estimator and the corresponding confidence intervals, 
 as well as further information on the dataset processed to PATH_OUT_ANALYSIS_KNN.
 It does so for all values given in k_list.json in PATH_IN_MODEL_SPECS and 
-uses the alpha value from the analysis information on the given setup,
-that is also taken from PATH_IN_MODEL_SPECS.
+uses value in "alpha" from the *setup_name*_analysis.json file that is also taken 
+from PATH_IN_MODEL_SPECS.
 
 '
 

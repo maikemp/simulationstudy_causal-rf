@@ -121,8 +121,11 @@ They show that under these conditions, when using the infinitesimal jackknife de
 \section{Simulation Study} % (fold)
 \label{sec:simulation}
 
-\input{formulas/setup_table.tex}
+For this project, I investigate four different setups. The first one exactly corresponds to the first setup in \cite{wa18}, while the second and the third setup are less computationally expensive versions of the versions in their paper, that is, I reduced the sample size and the number of trees estimated. It is very easy to change to the exact versions of the paper by simply editing the corresponding Json files in the \textit{src/model\_specs}, but time for computation will increase rapidly. As a fourth setup, I chose a treatment effect function that only depends on \(X_1\), and that has two larger bumps. I did this, to illustrate the claim of \cite[p.~1238]{wa18} that random forest approaches tend to flatten the hills and fill up the valleys of the true treatment effect function.
 
+\input{formulas/setup_table.tex} 
+
+The parameters are summarized in table  \ref{table:setup_table}
  \(\) \(\) \(\) \(\) \(\) {}
 
 
@@ -144,9 +147,6 @@ They show that under these conditions, when using the infinitesimal jackknife de
 \input{../../out/tables/coverage_table_setup_4.tex}
 
 
-\section{Conclusion} % (fold)
-\label{sec:conclusion}
-
 
 \begin{figure}
     \caption{Plot of Micro data for one forest and one testset of Setup 4 with d=3}
@@ -157,9 +157,10 @@ They show that under these conditions, when using the infinitesimal jackknife de
 
 
 
+\section{Conclusion} % (fold)
+\label{sec:conclusion}
 
 \pagebreak
-% section introduction (end)
 
 
 

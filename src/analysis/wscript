@@ -21,6 +21,7 @@ def build(ctx):
 
                 for rep_number in repetitions:
 
+                    # Dependencies that are required for all repetitions.
                     deplist = [
                         '../../project_paths.r',
                         ctx.path_to(
@@ -52,10 +53,14 @@ def build(ctx):
 
                     # Define dependencies that are specific to the crf method.
                     if method == 'crf':
+
+                        # Load the setup to check which functions are required. 
                         setup = json.load(
                             open('src/model_specs/{}_analysis.json'.format(setup_name))
                         )
-
+                        
+                        # Only include R modules containing the functions for sample
+                        # size and number of trees if they are used in estimate_crf.R
                         if str(setup['sample_size_function']).isnumeric() == False:
                             deplist.extend(
                                 [ctx.path_to(
@@ -64,14 +69,13 @@ def build(ctx):
                                     'sample_size_functions.R'
                                 )]
                             )
-
                         if str(setup['n_tree_function']).isnumeric() == False:
                             deplist.extend(
                                 [ctx.path_to(ctx, 'IN_MODEL_CODE',
                                              'n_tree_functions.R')]
                             )
 
-                        # Only for first repetition number, micro data is saved.
+                        # Only for the first repetition number, micro data is saved.
                         if rep_number == '0':
                             targetlist.extend([
                                 ctx.path_to(
@@ -100,7 +104,7 @@ def build(ctx):
                     )
 
     # Create one large dependency list for including all the before produced
-    # data snippets and project paths and .
+    # data snippets as well as the project paths and the simulation parameters.
     dep_list = [
         '../../project_paths.r',
         ctx.path_to(ctx, 'IN_MODEL_SPECS', 'simulation_parameters.json')
