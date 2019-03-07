@@ -64,15 +64,14 @@
 
 
 \begin{abstract}
-	In this simulation study, I investigate the coverage probabilities of the confidence intervals for treatment effects estimated by a nonparametric causal forest developed by \citet{wa18}. I broadly replicate their results and in addition visualize the relationship between the treatment effect estimator and the true treatment effect for a new experimental setup. I cna confirm the author's claim that their estimator performs better in terms of coverage probability and mean squared error most of the time. Furthermore, the bias of the estimator caused by a tendency of the estimator to smoothen bumps in the treatment effect function, can be confirmed.
-    
+	In this simulation study, I investigate the coverage probabilities of the confidence intervals for treatment effects estimated by a nonparametric causal forest developed by \citet{wa18}. I broadly replicate their results and in addition visualize the relationship between the treatment effect estimator and the true treatment effect for a new experimental setup. I can confirm the author's claim that their estimator performs better in terms of coverage probability and mean squared error than k nearest neighbor matching most of the time. Furthermore, the bias of the estimator seems to be caused by a tendency of the estimator to smoothen bumps in the treatment effect function.
 \end{abstract}
 \clearpage
 
 \section{Introduction} % (fold)
 \label{sec:introduction}
 
-I will first give a brief insight into the method itself. Then I will describe the chosen experimental setups for the simulation study, after which I will present the results. It follows a short conclusion.
+In this paper, I will first give a brief insight into the method itself. Then I will describe the chosen experimental setups for the simulation study and present the results. It follows a short conclusion.
 
 
 The project was programmed with Waf using a template from \citet{GaudeckerEconProjectTemplates}. 
@@ -110,7 +109,7 @@ To prove pointwise consistency and asymptotic Gaussianity for the random forest 
 They show that under these conditions, when using the infinitesimal jackknife developed by \cite{e14} to consistently estimate the variance and under some additional regularity assumptions, the treatment effect estimator from such a random forest is pointwise consistent for the true treatment effect and has an asymptotically Gaussian and centered sampling distribution so that asymptotic confidence intervals can be constructed. 
 
 \cite{wa18} develop two algorithms satisfying honesty: the double-sample trees and the propensity trees. The first one is called "Double sample trees" and it splits the available data into two parts. One part (and the features and treatment indicators of the other half) will be used to place the splits for the tree. The second half will be used to estimate the treatment effect per leaf, using function \ref{eq:tau_crf}.
-The second algorithm is called "Propensity Trees" and aims at placing the splits uses only the treatment assignment indicator to place its splits and is especially useful if we there is suspected bias due to a variation in the treatment propensity. For more details on these algorithms please see \cite[p.~1232]{wa18}.
+The second algorithm is called "Propensity Trees" and aims at placing the splits uses only the treatment assignment indicator to place its splits and is especially useful if we there is suspected bias due to a variation in the treatment propensity. For more details on these algorithms please see \cite[p.~1232]{wa18}. A careful description of the evolution of the regression tree method to the method presented here, and a thorough exploration of the causal random forests will be done in my master thesis.
 
 
 \section{Simulation Study} % (fold)
@@ -120,32 +119,45 @@ For this project, I investigate four different setups. The first one exactly cor
 
 \input{formulas/setup_table.tex} 
 
-The exact parameter values used for this study are summarized in table  \ref{table:setup_table}. 
+The exact parameter values used for this study are summarized in table  \ref{table:setup_table}. The nominal significance level is 5\%.
 
 
 \input{../../out/tables/coverage_table_setup_1.tex}\label{tab:setup_1}
 
-In table \ref{table:setup_1} to \ref{table:setup_4}it is
+The tables \ref{table:setup_1} to \ref{table:setup_4} contain the results of my simulation study. Since they only contain 2 simulation repetitions, they may not be too reliable yet. I chose this small number so the project doesn't take too long to build, and it will increased drastically for the simulation study of my master thesis.
+We can see that the results broadly confirm the results in \cite[p.~1238 ff.]{wa18}. Probably because of the low number of simulation runs, the relationship between coverage rate and number of features in setup 1 seems to be less monotonic, but is still similar in order of magnitude. The here used propensity tree algorithm overall achieves good coverage probabilities and, especially compared to the 100 nearest neighbor matching. 
 
 \input{../../out/tables/coverage_table_setup_2.tex}
 
+For setup 2, the results are not quite as good as in the \cite{wa18} which may be due to the lower sample size. Here, the algorithm seems to struggle when larger numbers of features are taken into account. However, The double sample algorithm still outperforms the k nearest neighbor matching, especially in terms of mean squared error. 
+
 \input{../../out/tables/coverage_table_setup_3.tex}
+
+The third setup has a sharper treatment effect function. Coverage rates and mean squared errors are therefore expected to worsen a bit since more bias is expected. This can not unambiguously be confirmed by my replication. To further investigate this, I will use more simulation repetitions in my master thesis.
 
 \input{../../out/tables/coverage_table_setup_4.tex}
 
+The fourth setup was chosen to be able to plot the true treatment effect and the estimated treatment effect against each other to look into when the bias is especially striking. One can already in table \ref{table:setup_4} that coverage rates are not close to the nominal coverage rate anymore and that the situation gets drastically worse as the number of features increases. Only the 10 nearest neighbor algorithm still exhibits somewhat acceptable performance. If we look at the plots in figure \ref{fig:setup_4}, we get an idea how for the reason.
 
-{}
 \begin{figure}
     \caption{Plot of Micro data for one forest and one testset of Setup 4 with d=3}
     
     \includegraphics[width=\textwidth]{../../out/figures/te_plot_setup_4}
+    \label{fig:setup_4}
 
 \end{figure}
 
+The black function shows the true treatment effect, while the dots are the estimated treatment effects and the "whiskers" indicate the width of the estimated confidence intervals. The points and its whiskers are shown in green if the interval covers the true treatment effect and in red if it fails to do so. It seems that while for only 2 features in the sample, only the estimators in regions where the treatment effect function is especially steep are off more often while the extreme points still seem to be covered quite well. 
 
+But as the number of features increases, it seems that the treatment effect function is "smoothened" more and more up to a situation where all estimators show approximately equal values, that are somewhere around the average treatment effect while the hills and valleys are hardly represented anymore.
+To investigate the reasons of this behavior and look into improvements for these problems will be part of my master thesis.
 
 \section{Conclusion} % (fold)
 \label{sec:conclusion}
+
+To conclude, I can overall confirm the results by \cite{wa18} that the causal random forests are in some situations suitable for estimation of heterogeneous treatment effects and valid inference for them. Bumpy treatment effect functions and larger numbers of features, however, seem to lead to substantial bias. 
+
+Getting deeper into the reasons for this behavior and looking into possible solutions for this problem will be part of my master thesis. There will also be given a much deeper insight into the rationale behind the method. Looking into how richer data structures, that is correlated variables and more complex main effect functions, will also be done there. 
 
 \pagebreak
 
