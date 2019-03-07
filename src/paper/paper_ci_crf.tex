@@ -50,7 +50,7 @@
 
 \begin{document}
 
-\title{Simulation Study on the Coverage Probabilities of Confidence Intervals for Heterogeneous Treatment Effects Estimated with Causal Random Forests\thanks{Maike Metz-Peeters, Universität Bonn. Email: \href{mailto:maike-m-p@web.de}{\nolinkurl{maike-m-p [at] web [dot] de}}.}}
+\title{Simulation Study on the Coverage Probabilities of Confidence Intervals for Heterogeneous Treatment Effects Estimated with Causal Random Forests\thanks{Maike Metz-Peeters, Universität Bonn. Email:gi \href{mailto:maike-m-p@web.de}{\nolinkurl{maike-m-p [at] web [dot] de}}.}}
 
 \author{Maike Metz-Peeters}
 
@@ -110,34 +110,22 @@ To prove pointwise consistency and asymptotic Gaussianity for the random forest 
 They show that under these conditions, when using the infinitesimal jackknife developed by \cite{e14} to consistently estimate the variance and under some additional regularity assumptions, the treatment effect estimator from such a random forest is pointwise consistent for the true treatment effect and has an asymptotically Gaussian and centered sampling distribution so that asymptotic confidence intervals can be constructed. 
 
 \cite{wa18} develop two algorithms satisfying honesty: the double-sample trees and the propensity trees. The first one is called "Double sample trees" and it splits the available data into two parts. One part (and the features and treatment indicators of the other half) will be used to place the splits for the tree. The second half will be used to estimate the treatment effect per leaf, using function \ref{eq:tau_crf}.
-
-% Describe each algorithm in one sentence and refer to paper again...
-
-
-\(\) \(\) 
+The second algorithm is called "Propensity Trees" and aims at placing the splits uses only the treatment assignment indicator to place its splits and is especially useful if we there is suspected bias due to a variation in the treatment propensity. For more details on these algorithms please see \cite[p.~1232]{wa18}.
 
 
 \section{Simulation Study} % (fold)
 \label{sec:simulation}
 
-For this project, I investigate four different setups. The first one exactly corresponds to the first setup in \cite{wa18}, while the second and the third setup are less computationally expensive versions of the versions in their paper, that is, I reduced the sample size and the number of trees estimated. It is very easy to change to the exact versions of the paper by simply editing the corresponding Json files in the \textit{src/model\_specs}, but time for computation will increase rapidly. As a fourth setup, I chose a treatment effect function that only depends on \(X_1\), and that has two larger bumps. I did this, to illustrate the claim of \cite[p.~1238]{wa18} that random forest approaches tend to flatten the hills and fill up the valleys of the true treatment effect function.
+For this project, I investigate four different setups. The first one exactly corresponds to the first setup in \cite{wa18}, while the second and the third setup are less computationally expensive versions of the versions in this paper, that is, I reduced the sample size and the number of trees estimated. It is very easy to change to the exact versions of the paper by simply editing the corresponding Json files in the \textit{src/model\_specs}, but time for computation will increase rapidly. As a fourth setup, I chose a treatment effect function that only depends on \(X_1\), and that has two larger bumps. I did this, to illustrate the claim of \cite[p.~1238]{wa18} that random forest approaches tend to flatten the hills and fill up the valleys of the true treatment effect function.
 
 \input{formulas/setup_table.tex} 
 
-The parameters are summarized in table  \ref{table:setup_table}
- \(\) \(\) \(\) \(\) \(\) {}
+The exact parameter values used for this study are summarized in table  \ref{table:setup_table}. 
 
 
+\input{../../out/tables/coverage_table_setup_1.tex}\label{tab:setup_1}
 
-\subsection{Approach} % (fold)
-\label{sec:sim_approach}
-
-
-
-\subsection{Results} % (fold)
-\label{sec:sim_results}
-    
-\input{../../out/tables/coverage_table_setup_1.tex}
+In table \ref{table:setup_1} to \ref{table:setup_4}it is
 
 \input{../../out/tables/coverage_table_setup_2.tex}
 
@@ -146,7 +134,7 @@ The parameters are summarized in table  \ref{table:setup_table}
 \input{../../out/tables/coverage_table_setup_4.tex}
 
 
-
+{}
 \begin{figure}
     \caption{Plot of Micro data for one forest and one testset of Setup 4 with d=3}
     

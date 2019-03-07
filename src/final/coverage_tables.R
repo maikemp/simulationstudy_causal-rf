@@ -90,7 +90,8 @@ write_to_latex <- function(output_table, setup_name) {
   # Replace underscores by spaces to name setup in the caption.
   xtab <- xtable(
     output_table, 
-    caption = paste("Simulation results for", gsub("_", " ", setup_name))
+    caption = paste("Simulation results for", gsub("_", " ", setup_name)),
+    label = paste0("table:",setup_name)
   )
   # Only take the method name from the column names.
   colnames(xtab) <- gsub("^.* ", "", colnames(output_table))
