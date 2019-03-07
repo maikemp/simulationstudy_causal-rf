@@ -7,7 +7,7 @@ Research paper / presentations
 
 Purpose of the different files (rename them to your liking):
 
-    * :file:`research_paper.tex` contains the actual paper.
-    * :file:`research_pres_30min.tex` contains a typical conference presentation.
-    * :file:`research_pres_90min.tex` contains a full-length seminar presentation (add by yourself).
-    * :file:`formulas` contains short files with the LaTeX formulas -- put these into a library for re-use in paper and presentations.
+    * :file:`paper_ci_crf.tex` contains the actual paper.
+    * :file:`presentation.tex` contains a typical conference presentation.
+    * :file:`formulas` contains short files with the LaTeX formulas that are used in both before mentioned files. I also put here one table containing all the parameters of the different setups for use in the other files.
+    * :file:`refs.bib` contains all references that can be cited in the other tex files. 
