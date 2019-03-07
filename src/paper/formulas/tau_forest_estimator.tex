@@ -1,5 +1,6 @@
-\[\hat{\tau}(x) = 
-\frac{1}{|\{i:W_i = 1, X_i \in L(x)\}|}\sum_{i:W_i = 1, X_i \in L(x)}Y_i -
-\frac{1}{|\{i:W_i = 0, X_i \in L(x)\}|}\sum_{i:W_i = 0, X_i \in L(x)}Y_i\]
-and then average over \(B\) such trees grown on the \(B\) different subsamples by: 
-\(\hat{\tau}(x) = \frac{1}{B}\sum_{b=1}^B\ \hat{\tau}_b(x)\).
+\begin{equation}\label{eq:tau_crf}
+    \hat{\tau}(x) = 
+    \frac{1}{|\{i:W_i = 1, X_i \in L(x)\}|}\sum_{i:W_i = 1, X_i \in L(x)}Y_i -
+    \frac{1}{|\{i:W_i = 0, X_i \in L(x)\}|}\sum_{i:W_i = 0, X_i \in L(x)}Y_i
+\end{equation}
+and then average over \(B\) such trees grown on the \(B\) different subsamples by: \(\hat{\tau}(x) = \frac{1}{B}\sum_{b=1}^B\ \hat{\tau}_b(x)\).

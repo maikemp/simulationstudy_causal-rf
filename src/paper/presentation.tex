@@ -8,7 +8,7 @@
 \usepackage{fancyvrb, moreverb, relsize}
 \usepackage{eurosym, calc}
 \usepackage{amsmath, amssymb, amsfonts, amsthm, bm, MnSymbol} 
-
+\usepackage{resizegather}
 
 
 \usepackage{natbib}
@@ -53,22 +53,16 @@
     \frametitle{Background}
     \begin{itemize}
         \item Target: \input{formulas/treatment_effect}
-        \item \citet{wa18} 
+        \item \citet{wa18} grow trees with recursive partitioning and then estimate treatment effects for each leaf using: 
+        \input{formulas/tau_forest_estimator}
+        \item Similarly for k nearest neighbor matching: \input{formulas/tau_knn_estimator}
     \end{itemize}
 \end{frame}
 
 \begin{frame}
     \frametitle{Experimental Setups}
 
-    \input{formulas/setup_table.tex} 
-
-\end{frame}
-
-
-\begin{frame}
-    \frametitle{Experimental Setups}
-
-    \input{formulas/setup_table.tex} 
+    \input{formulas/setup_table}
 
 \end{frame}
 
@@ -148,7 +142,6 @@
 
 \begin{frame}[allowframebreaks]
     \frametitle{References}
-    
     
     \bibliography{refs}
     

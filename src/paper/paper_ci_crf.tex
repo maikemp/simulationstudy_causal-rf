@@ -64,8 +64,7 @@
 
 
 \begin{abstract}
-	In this simulation study, I investigate the coverage probabilities of the confidence intervals for treatment effects estimated by a nonparametric causal forest developed by \citet{wa18}. I replicate there results and ... 
-    (Shortly state results.)
+	In this simulation study, I investigate the coverage probabilities of the confidence intervals for treatment effects estimated by a nonparametric causal forest developed by \citet{wa18}. I broadly replicate their results and in addition visualize the relationship between the treatment effect estimator and the true treatment effect for a new experimental setup. I cna confirm the author's claim that their estimator performs better in terms of coverage probability and mean squared error most of the time. Furthermore, the bias of the estimator caused by a tendency of the estimator to smoothen bumps in the treatment effect function, can be confirmed.
     
 \end{abstract}
 \clearpage
@@ -73,10 +72,10 @@
 \section{Introduction} % (fold)
 \label{sec:introduction}
 
-I will first give a brief insight into the method itself, before describing my approach for the simulation study, aftre which I will present my results. It follows a short conclusion.
+I will first give a brief insight into the method itself. Then I will describe the chosen experimental setups for the simulation study, after which I will present the results. It follows a short conclusion.
 
 
-If you are using this template, please cite this item from the references: \citet{GaudeckerEconProjectTemplates}
+The project was programmed with Waf using a template from \citet{GaudeckerEconProjectTemplates}. 
 
 
 \section{Background} % (fold)
@@ -91,7 +90,7 @@ As usually, unconfoundedness is assumed:
 \input{formulas/unconfoundedness}
 This means that the selection bias into treatment disappears when controlling for observable features, and thus around observations that are "close" in the feature space behave like a randomized experiment. 
 Nearest neighbor methods exploit this assumption. As is described by \citet{lj06}, random forests can also be viewed as an adaptively weighted k potential nearest neighbors method. For this reason, a simple k nearest neighbor matching procedure is the used as baseline method.
-As explained in detail by \citet{hir03}, if a consistent estimator for the propensity of receiving treatment \(e(x) = \mathbb{E}[W_i|X_i = x]\)  is available, an unbiased estimator for the treatement effect could be obtained employing: 
+As explained in detail by \citet{hir03}, if a consistent estimator for the propensity of receiving treatment \(e(x) = \mathbb{E}[W_i|X_i = x]\)  is available, an unbiased estimator for the treatment effect could be obtained employing: 
 \input{formulas/propensity_estimation}
 
 Generally, a random regression forest is build by subsampling (originally by bootstrapping) the data and then growing a tree on each subsample by recursively partitioning the data in order to get the best fit according to some splitting criterion \citep[p.~304 ff.]{htf08}. The partitioning is repeated until some stopping criterion is achieved. The idea is that the data points in the terminal nodes of a trees are similar to each other and therefore a constant estimator as a simple average over the observed outcomes suffices:
@@ -110,7 +109,7 @@ where \(S_1\) and \(S_0\) represent the k nearest neighbors in the treatment and
 To prove pointwise consistency and asymptotic Gaussianity for the random forest estimator, in addition to the above mentioned assumptions \cite{wa18} require overlap and, which means that at each data point, the probabilities to receive and not to receive treatment are strictly positive as well as a property they call "honesty". It means that for each observation, the response can only be used either to select the model (that is to place the splits) or to estimate the treatment effect, but not for both. Furthermore, the conditional expectations of the outcome under treatment and without treatment at any data point have to be Lipschitz continuous.
 They show that under these conditions, when using the infinitesimal jackknife developed by \cite{e14} to consistently estimate the variance and under some additional regularity assumptions, the treatment effect estimator from such a random forest is pointwise consistent for the true treatment effect and has an asymptotically Gaussian and centered sampling distribution so that asymptotic confidence intervals can be constructed. 
 
-\cite{wa18} develop two algorithms satisfying honesty: the double-sample trees and the propensity trees. The first one 
+\cite{wa18} develop two algorithms satisfying honesty: the double-sample trees and the propensity trees. The first one is called "Double sample trees" and it splits the available data into two parts. One part (and the features and treatment indicators of the other half) will be used to place the splits for the tree. The second half will be used to estimate the treatment effect per leaf, using function \ref{eq:tau_crf}.
 
 % Describe each algorithm in one sentence and refer to paper again...
 
