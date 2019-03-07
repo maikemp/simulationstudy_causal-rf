@@ -12,6 +12,8 @@ The method uses subsampling and is therefore computationally very expensive. In 
 
 So while not all steps of my project may seem intuitively efficient at first sight, they do serve the goal of being able to keep as much of the already-calculated data as possible, sometimes at the expense of using up more memory capacity than strictly necessary. There are three main setps of this project: first, samples ares simulated that the analysis will be performed on later on, then in the second step, the analysis is run with (two) different methods and last, the results from the analysis are processed and visualized. In the following chapters, I will explain the details of my implementation approach step by step.
 
+The first build of the project will require about 8 minutes, not taking into account the time required for first installing the required R packages. To reduce this time simply remove some values in "d_list" or some of the names in "list_of_setups" in *src/model_specs/simulation_parameters.json*. Or reduce the "rep_number" to 1. (Note: as described below, if "setup_4" is removed from "list_of_setups", it has also be removed from "te_only_by_X_0" and thus no micro plot will be created.)
+
 .. _project_structure:
 
 Project Structure

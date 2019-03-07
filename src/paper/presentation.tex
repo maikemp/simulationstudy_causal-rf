@@ -41,14 +41,32 @@
 
 
 \begin{frame}
-    \frametitle{heading here}
-    \citet{GaudeckerEconProjectTemplates}
-    
+    \frametitle{Introduction}
+    \begin{itemize}
+        \item Waf project initiated with a template from \citet{GaudeckerEconProjectTemplates}
+        \item Replication of the simulation study from \citet{wa18}
+        \item Illustration of the bias in the treatment effect estimator
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Background}
+    \begin{itemize}
+        \item Target: \input{formulas/treatment_effect}
+        \item \citet{wa18} 
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Experimental Setups}
+
+    \input{formulas/setup_table.tex} 
+
 \end{frame}
 
 
 \begin{frame}
-    \frametitle{heading here}
+    \frametitle{Experimental Setups}
 
     \input{formulas/setup_table.tex} 
 
@@ -57,7 +75,7 @@
 
 
 \begin{frame}
-    \frametitle{heading here}
+    \frametitle{Results - Setup 1}
     
     \input{../../out/tables/coverage_table_setup_1.tex}
 
@@ -65,7 +83,7 @@
 
 
 \begin{frame}
-    \frametitle{heading here}
+    \frametitle{Results - Setup 2}
     
     \input{../../out/tables/coverage_table_setup_2.tex}
 
@@ -73,7 +91,7 @@
 
 
 \begin{frame}
-    \frametitle{heading here}
+    \frametitle{Results - Setup 3}
     
     \input{../../out/tables/coverage_table_setup_3.tex}
 
@@ -81,7 +99,7 @@
 
 
 \begin{frame}
-    \frametitle{heading here}
+    \frametitle{Results - Setup 4}
     
     \input{../../out/tables/coverage_table_setup_4.tex}
 
@@ -90,7 +108,7 @@
 
 
 \begin{frame}
-    \frametitle{heading here}
+    \frametitle{Micro Data Plots}
     
     \begin{figure}
         \caption{Plot of Micro data of Setup 4}
@@ -100,15 +118,22 @@
     \end{figure}
 
 \end{frame}
-%\begin{frame}[t]
-%    \frametitle{heading here}
-%    \begin{itemize}
-%        \item<+-> Please cite this template as: \citet{GaudeckerEconProjectTemplates}
-%        \item<+-> \citet{Schelling69} example in the code is taken from \citet{StachurskiSargent13}.
-%        \item<+-> The decision rule of an agent is 
-%    \end{itemize}
-%    \note{~}
-%\end{frame}
+
+
+\begin{frame}
+    \frametitle{Conclusion}
+    
+    \begin{itemize}
+        \item Results simliar to those in \citet{wa18}
+        \item Overall better precision than k Nearest Neighbor Matching
+        \item Larger numbers of variables seem to lead to problems
+        \item A "bumpy" treatment effect functions lead to bias in estimator
+        \item Causal Random Forests struggle to identify extreme values of the heterogeneity - tend to flatten hills and fill up valleys
+        \item Problem seems to increase for larger number of features
+    \end{itemize}
+
+\end{frame}
+
 
 
 % Print black screen only in presentation mode for finishing up.
