@@ -173,15 +173,14 @@ run_and_write_forest <- function(setup_name, d, rep_number) {
   write(export_json, path_out)
 
   # Create micro data only for the first repetition of any setup.
-  if (rep_number == 0) {
-    path_out_micro <- paste0(
-      PATH_OUT_ANALYSIS_CRF,
-      "/crf_data_", setup_name, "_d=", d, "_micro_data.json"
-    )
-    micro_data <- analysis$micro_data
-    export_json <- toJSON(micro_data)
-    write(export_json, path_out_micro)
-  }
+  path_out_micro <- paste0(
+    PATH_OUT_ANALYSIS_CRF,
+    "/crf_data_", setup_name, "_d=", d,"_rep_", rep_number, "_micro_data.json"
+  )
+  micro_data <- analysis$micro_data
+  export_json <- toJSON(micro_data)
+  write(export_json, path_out_micro)
+
 }
 
 # Define values that will be given from Waf.

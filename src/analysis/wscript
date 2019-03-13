@@ -78,15 +78,14 @@ def build(ctx):
                             )
 
                         # Only for the first repetition number, micro data is saved.
-                        if rep_number == '0':
-                            targetlist.extend([
-                                ctx.path_to(
-                                    ctx,
-                                    'OUT_ANALYSIS_CRF',
-                                    'crf_data_{}_d={}_micro_data.json'.format(
-                                        setup_name, d)
-                                )
-                            ])
+                        targetlist.extend([
+                            ctx.path_to(
+                                ctx,
+                                'OUT_ANALYSIS_CRF',
+                                'crf_data_{}_d={}_rep_{}_micro_data.json'.format(
+                                setup_name, d, rep_number)
+                            )
+                        ])
 
                     # Define dependencies that are specific to the knn method.
                     if method == 'knn':
