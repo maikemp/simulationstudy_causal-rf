@@ -40,7 +40,7 @@ def build(ctx):
         for d in d_list:
             deplist.extend([
                 ctx.path_to(ctx, 'OUT_ANALYSIS_CRF',
-                            'crf_data_{}_d={}_micro_data.json'.format(
+                            'crf_data_{}_d={}_rep_0_micro_data.json'.format(
                                 setup_name, d)
                             )
             ])

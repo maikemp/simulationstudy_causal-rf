@@ -1,5 +1,5 @@
 {
-    "rep_number": 2,
+    "rep_number": 3,
     "list_of_setups": ["setup_1", "setup_2", "setup_3", "setup_4"],
     "te_only_by_X_0": ["setup_4"],
     "d_list": [2, 3, 5, 8, 10],

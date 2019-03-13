@@ -45,7 +45,7 @@ def plot_tau_ci(setup_name, d_list):
         micro_data = pd.DataFrame(
             json.load(open(
                 ppj("OUT_ANALYSIS_CRF",
-                    'crf_data_{}_d={}_micro_data.json'.format(setup_name, d)
+                    'crf_data_{}_d={}_rep_0_micro_data.json'.format(setup_name, d)
                     ),
                 encoding="utf-8"))
         )

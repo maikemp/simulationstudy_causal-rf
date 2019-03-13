@@ -65,12 +65,20 @@ predict_knn <- function(dataframe, testset, alpha, k) {
   std_err <- sqrt(predict_w0_var + predict_w1_var)
 
   qt <- qt(p = 1 - alpha / 2, df = n - d)
+  half_ci_width <- qt * std_err
 
   # Derive coverage rate of confidence intervals.
   knn_cov <- abs(estimated_te - true_effect) <= qt * std_err
   knn_covered <- mean(knn_cov)
+  
+  micro_data <- cbind(X_test[1], true_effect, estimated_te, knn_cov, half_ci_width)
 
-  return(cbind(knn_covered, knn_mse))
+  return(
+    list(
+      "results" = cbind(knn_covered, knn_mse),
+      "micro_data" = micro_data
+    )
+  )
 }
 
 run_and_write_knn <- function(setup_name, d, rep_number) {
@@ -89,6 +97,10 @@ run_and_write_knn <- function(setup_name, d, rep_number) {
     PATH_OUT_ANALYSIS_KNN,
     "/knn_data_", setup_name, "_d=", d, "_rep_", rep_number, ".json"
   )
+  path_out_micro <<- paste0(
+    PATH_OUT_ANALYSIS_KNN,
+    "/knn_data_", setup_name, "_d=", d,"_rep_", rep_number, "_micro_data.json"
+  )
 
   # Load required information and data.
   data <- as.data.frame(do.call("cbind", fromJSON(path_data)))
@@ -98,21 +110,38 @@ run_and_write_knn <- function(setup_name, d, rep_number) {
 
   # Run extra analysis for each k value in_param$k_list
   # and attach the results to the exported data frame.
-  analysis <- list()
+  results <- list()
   alpha <- k_list$alpha
   for (k in k_list$k_list) {
     analysis_k <- predict_knn(data, test_data, alpha, k)
-    colnames(analysis_k) <- c(
+    results_k <- analysis_k$results
+    colnames(results_k) <- c(
       paste0("knn_covered_", k),
       paste0("knn_mse_", k)
     )
-    analysis <- cbind(analysis, analysis_k)
+    results <- cbind(results, results_k)
+    
+    # Create micro data set.
+    if (k == k_list$k_list[1]){
+      micro_data <- analysis_k$micro_data
+      colnames(micro_data) <- c("X_1", "true_effect", paste0("tau_k=", k), paste0("cov_k=", k),paste0("half_ci_width_k=", k))
+    } else {
+      micro_data_app <- analysis_k$micro_data[3:5]
+      colnames(micro_data_app) <- c(paste0("tau_k=", k), paste0("cov_k=", k),paste0("half_ci_width_k=", k))
+      micro_data <- cbind(micro_data, micro_data_app)
+    }
+    
   }
-
+  
+  # Write out micro data.
+  export_json <- toJSON(micro_data)
+  write(export_json, path_out_micro)
+  
   # Create an id that identifies the processed dataset.
   id <- paste0(setup_name, "_d=", d, "_rep_", rep_number)
-  out_data <- cbind(id, analysis)
-
+  out_data <- cbind(id, results)
+  
+  # Write out aggregated result data.
   export_json <- toJSON(as.data.frame(out_data))
   write(export_json, path_out)
 }
